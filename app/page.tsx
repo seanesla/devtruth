@@ -4,13 +4,18 @@ import type React from "react"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import { useSceneMode } from "@/lib/scene-context"
+import { useLenis } from "@/hooks/use-lenis"
 import { EnterButton } from "@/components/enter-button"
 import { FeaturesSection } from "@/components/features-section"
 import { Footer } from "@/components/footer"
+import { LiquidGlassNavbar } from "@/components/liquid-glass-navbar"
 
 export default function LandingPage() {
   const [contentVisible, setContentVisible] = useState(false)
   const { setMode } = useSceneMode()
+
+  // Smooth scroll with inertia
+  useLenis()
 
   // Set scene to landing mode when this page mounts
   useEffect(() => {
@@ -22,25 +27,18 @@ export default function LandingPage() {
     return () => clearTimeout(timer)
   }, [])
 
-  useEffect(() => {
-    document.documentElement.style.scrollBehavior = "smooth"
-    return () => {
-      document.documentElement.style.scrollBehavior = "auto"
-    }
-  }, [])
-
   return (
     <div className="min-h-screen bg-transparent overflow-x-hidden">
-      {/* Nav */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-5 md:px-12 transition-all duration-1000 ${
+      {/* Liquid Glass Nav */}
+      <LiquidGlassNavbar
+        className={`transition-all duration-1000 ${
           contentVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
         }`}
       >
         <Link href="/" className="font-mono text-sm tracking-tight text-foreground">
           /dev/truth
         </Link>
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-6">
           <Link
             href="#features"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block"
@@ -55,7 +53,7 @@ export default function LandingPage() {
           </Link>
           <EnterButton variant="nav" />
         </div>
-      </nav>
+      </LiquidGlassNavbar>
 
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12">
