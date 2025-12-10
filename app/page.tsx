@@ -12,28 +12,38 @@ import { LiquidGlassNavbar } from "@/components/liquid-glass-navbar"
 import { Logo } from "@/components/logo"
 
 export default function LandingPage() {
-  const [contentVisible, setContentVisible] = useState(false)
-  const { setMode } = useSceneMode()
+  const [heroVisible, setHeroVisible] = useState(false)
+  const [navVisible, setNavVisible] = useState(false)
+  const { resetToLanding, isLoading } = useSceneMode()
 
   // Smooth scroll with inertia
   useLenis()
 
-  // Set scene to landing mode when this page mounts
+  // Reset scene to landing mode when this page mounts
   useEffect(() => {
-    setMode("landing")
-  }, [setMode])
+    resetToLanding()
+  }, [resetToLanding])
 
+  // Show content after loading animation completes
   useEffect(() => {
-    const timer = setTimeout(() => setContentVisible(true), 1500)
-    return () => clearTimeout(timer)
-  }, [])
+    if (!isLoading) {
+      // Loading just finished - show hero after small delay
+      const heroTimer = setTimeout(() => setHeroVisible(true), 200)
+      // Show navbar after hero starts appearing
+      const navTimer = setTimeout(() => setNavVisible(true), 600)
+      return () => {
+        clearTimeout(heroTimer)
+        clearTimeout(navTimer)
+      }
+    }
+  }, [isLoading])
 
   return (
     <div className="min-h-screen bg-transparent overflow-x-hidden">
       {/* Liquid Glass Nav */}
       <LiquidGlassNavbar
         className={`transition-all duration-1000 ${
-          contentVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+          navVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
         }`}
       >
         <Link href="/" className="flex items-center gap-2 text-[#cd9c60] hover:text-[#e0b080] transition-colors">
@@ -61,7 +71,7 @@ export default function LandingPage() {
         <div className="relative z-10 max-w-3xl">
           <h1
             className={`text-5xl md:text-7xl lg:text-8xl font-serif leading-[0.9] tracking-tight mb-8 transition-all duration-1000 delay-400 ${
-              contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
             Your metrics
@@ -72,7 +82,7 @@ export default function LandingPage() {
           </h1>
           <p
             className={`text-muted-foreground text-lg md:text-xl max-w-md leading-relaxed mb-12 transition-all duration-1000 delay-600 ${
-              contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
             /dev/truth validates every KPI against ground truth. Find the drift before it finds you.
@@ -81,7 +91,7 @@ export default function LandingPage() {
           {/* Dual CTA */}
           <div
             className={`flex items-center gap-6 transition-all duration-1000 delay-800 ${
-              contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
             <EnterButton variant="hero" />
@@ -97,7 +107,7 @@ export default function LandingPage() {
         {/* Scroll indicator */}
         <div
           className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 transition-all duration-1000 delay-1000 ${
-            contentVisible ? "opacity-100" : "opacity-0"
+            heroVisible ? "opacity-100" : "opacity-0"
           }`}
         >
           <div className="w-px h-12 bg-gradient-to-b from-transparent via-foreground/30 to-foreground/50 animate-pulse" />
