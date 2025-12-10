@@ -2,12 +2,20 @@
 
 import type React from "react"
 import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
-import SceneBackground from "@/components/scene-background"
 import { useEffect, useRef, useState } from "react"
+import { useSceneMode } from "@/lib/scene-context"
+import { EnterButton } from "@/components/enter-button"
+import { FeaturesSection } from "@/components/features-section"
+import { Footer } from "@/components/footer"
 
 export default function LandingPage() {
   const [contentVisible, setContentVisible] = useState(false)
+  const { setMode } = useSceneMode()
+
+  // Set scene to landing mode when this page mounts
+  useEffect(() => {
+    setMode("landing")
+  }, [setMode])
 
   useEffect(() => {
     const timer = setTimeout(() => setContentVisible(true), 1500)
@@ -23,8 +31,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-transparent overflow-x-hidden">
-      <SceneBackground />
-
       {/* Nav */}
       <nav
         className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-5 md:px-12 transition-all duration-1000 ${
@@ -35,28 +41,35 @@ export default function LandingPage() {
           /dev/truth
         </Link>
         <div className="flex items-center gap-8">
-          <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Dashboard
+          <Link
+            href="#features"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block"
+          >
+            Features
           </Link>
           <Link
-            href="/dashboard"
-            className="text-sm border border-foreground/20 px-4 py-2 hover:bg-foreground hover:text-background transition-all"
+            href="#how-it-works"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block"
           >
-            Enter
+            How It Works
           </Link>
+          <EnterButton variant="nav" />
         </div>
       </nav>
 
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12">
         <div className="relative z-10 max-w-3xl">
-          <p
-            className={`text-muted-foreground mb-6 tracking-wide uppercase text-xs transition-all duration-1000 delay-200 ${
+          {/* Animated badge */}
+          <div
+            className={`inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/30 backdrop-blur px-4 py-1.5 text-sm mb-6 transition-all duration-1000 delay-200 ${
               contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
-            KPI Validation Platform
-          </p>
+            <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+            Now validating 2M+ KPIs daily
+          </div>
+
           <h1
             className={`text-5xl md:text-7xl lg:text-8xl font-serif leading-[0.9] tracking-tight mb-8 transition-all duration-1000 delay-400 ${
               contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
@@ -75,15 +88,21 @@ export default function LandingPage() {
           >
             /dev/truth validates every KPI against ground truth. Find the drift before it finds you.
           </p>
-          <Link
-            href="/dashboard"
-            className={`group inline-flex items-center gap-3 text-lg border-b border-foreground pb-2 hover:text-accent hover:border-accent transition-all duration-1000 delay-800 ${
+
+          {/* Dual CTA */}
+          <div
+            className={`flex items-center gap-6 transition-all duration-1000 delay-800 ${
               contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
-            Start validating
-            <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-          </Link>
+            <EnterButton variant="hero" />
+            <Link
+              href="#how-it-works"
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            >
+              See how it works
+            </Link>
+          </div>
         </div>
 
         {/* Scroll indicator */}
@@ -104,14 +123,18 @@ export default function LandingPage() {
             {[
               { value: "2M+", label: "KPIs validated daily" },
               { value: "0.02s", label: "Avg validation time" },
-              { value: "847", label: "Silent errors caught" },
+              { value: "847", label: "Lies exposed", highlight: true },
               { value: "99.9%", label: "Uptime" },
             ].map((stat, i) => (
               <div
                 key={i}
                 className="p-8 md:p-12 border-r border-border/50 last:border-r-0 border-b md:border-b-0 group hover:bg-foreground/5 transition-colors"
               >
-                <p className="text-3xl md:text-5xl font-serif mb-2 group-hover:text-accent transition-colors">
+                <p
+                  className={`text-3xl md:text-5xl font-serif mb-2 transition-colors stat-breathe ${
+                    stat.highlight ? "text-accent" : "group-hover:text-accent"
+                  }`}
+                >
                   {stat.value}
                 </p>
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
@@ -139,6 +162,9 @@ export default function LandingPage() {
                   Your team makes decisions on these numbers every day. But when was the last time anyone checked if
                   they were true?
                 </p>
+                <p className="text-foreground font-medium border-l-2 border-accent pl-4">
+                  A misconfigured filter excluded 23% of transactions for 4 months. The dashboard looked fine.
+                </p>
                 <p className="text-foreground font-medium">/dev/truth checks. Continuously.</p>
               </div>
             </div>
@@ -146,9 +172,16 @@ export default function LandingPage() {
         </section>
       </ScrollReveal>
 
+      {/* Features */}
+      <ScrollReveal>
+        <section id="features" className="bg-background/40 backdrop-blur-xl">
+          <FeaturesSection />
+        </section>
+      </ScrollReveal>
+
       {/* How it works */}
       <ScrollReveal>
-        <section className="py-32 px-6 md:px-12 bg-card/50 backdrop-blur-xl">
+        <section id="how-it-works" className="py-32 px-6 md:px-12 bg-card/50 backdrop-blur-xl">
           <div className="max-w-7xl mx-auto">
             <p className="text-xs uppercase tracking-widest text-muted-foreground mb-16">How It Works</p>
 
@@ -200,24 +233,18 @@ export default function LandingPage() {
             <p className="text-muted-foreground text-xl mb-12 max-w-md mx-auto">
               Know your metrics are true, or know exactly why they're not.
             </p>
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 bg-foreground text-background px-8 py-4 text-lg hover:bg-accent hover:scale-105 transition-all"
-            >
-              Enter /dev/truth
-              <ArrowUpRight className="h-5 w-5" />
-            </Link>
+            <EnterButton variant="cta" />
           </div>
         </section>
       </ScrollReveal>
 
       {/* Footer */}
-      <footer className="border-t border-border/50 py-8 px-6 md:px-12 bg-background/70 backdrop-blur-xl">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <span className="font-mono">/dev/truth</span>
-          <span>© 2025</span>
+      <div className="bg-background/70 backdrop-blur-xl">
+        <Footer />
+        <div className="border-t border-border/30 py-4 px-6 text-center">
+          <p className="text-xs text-muted-foreground">Built for Tableau Hackathon 2025</p>
         </div>
-      </footer>
+      </div>
     </div>
   )
 }
@@ -234,7 +261,7 @@ function ScrollReveal({ children }: { children: React.ReactNode }) {
           observer.disconnect()
         }
       },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
     )
 
     if (ref.current) observer.observe(ref.current)

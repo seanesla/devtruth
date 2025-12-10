@@ -147,3 +147,66 @@
     mask-image: linear-gradient(to bottom, black 60%, transparent);
   }
 }
+
+/* Breathing animation for stats */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.015);
+  }
+}
+
+.stat-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* Subtle glitch for failing status */
+@keyframes subtle-glitch {
+  0%, 97%, 100% {
+    transform: translateX(0);
+  }
+  98% {
+    transform: translateX(-1px);
+  }
+  99% {
+    transform: translateX(1px);
+  }
+}
+
+.status-fail {
+  animation: subtle-glitch 3s ease-in-out infinite;
+}
+
+/* View transitions */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.4s;
+}
+
+::view-transition-old(root) {
+  animation-name: fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: fade-in;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
