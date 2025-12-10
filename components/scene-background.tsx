@@ -444,7 +444,7 @@ function LoadingOverlay({
       }`}
     >
       {AnimatedLogo ? (
-        <AnimatedLogo size={140} onComplete={onAnimationComplete} />
+        <AnimatedLogo size={280} onComplete={onAnimationComplete} />
       ) : (
         // Fallback spinner while AnimatedLogo loads
         <div className="relative">
