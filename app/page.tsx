@@ -60,16 +60,6 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12">
         <div className="relative z-10 max-w-3xl">
-          {/* Animated badge */}
-          <div
-            className={`inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/30 backdrop-blur px-4 py-1.5 text-sm mb-6 transition-all duration-1000 delay-200 ${
-              contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
-            <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-            Now validating 2M+ KPIs daily
-          </div>
-
           <h1
             className={`text-5xl md:text-7xl lg:text-8xl font-serif leading-[0.9] tracking-tight mb-8 transition-all duration-1000 delay-400 ${
               contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
