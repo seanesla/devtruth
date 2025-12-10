@@ -15,6 +15,23 @@ pnpm lint      # Run ESLint
 pnpm start     # Start production server
 ```
 
+## Git Commits
+
+Commit frequently—after each logical unit of work, not in large batches.
+
+**Message format:**
+- Type prefix: `feat:`, `fix:`, `refactor:`, `perf:`, `docs:`, `chore:`, `test:`
+- Imperative mood, lowercase after prefix: `feat: add user authentication`
+- First line ≤50 chars; body ≤72 chars/line if needed
+
+**Examples:**
+```
+feat: add dashboard filter component
+fix: resolve null pointer in test runner
+refactor: extract validation logic to utility
+perf: memoize expensive KPI calculations
+```
+
 ## Architecture
 
 **Stack**: Next.js 16 + React 19 + TypeScript + Tailwind CSS v4 + shadcn/ui (new-york style)
