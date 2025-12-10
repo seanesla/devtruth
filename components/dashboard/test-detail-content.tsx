@@ -1,58 +1,12 @@
 import { CheckCircle2, XCircle, Clock, Database } from "lucide-react"
+import { getTestDetailById } from "@/lib/data/mock-tests"
 
-const testData: Record<
-  string,
-  {
-    name: string
-    status: "pass" | "fail"
-    source: string
-    dashboardValue: string
-    calculatedValue: string
-    variance: string
-    confidence: string
-    lastRun: string
-    query: string
-    history: { time: string; status: "pass" | "fail"; variance: string }[]
-  }
-> = {
-  "1": {
-    name: "Monthly Revenue",
-    status: "pass",
-    source: "Looker",
-    dashboardValue: "$2,412,847",
-    calculatedValue: "$2,412,361",
-    variance: "0.02%",
-    confidence: "99.8%",
-    lastRun: "2 minutes ago",
-    query: "SELECT SUM(amount) FROM transactions WHERE date >= '2024-01-01'",
-    history: [
-      { time: "2 min ago", status: "pass", variance: "0.02%" },
-      { time: "1 hour ago", status: "pass", variance: "0.01%" },
-      { time: "2 hours ago", status: "pass", variance: "0.03%" },
-      { time: "3 hours ago", status: "pass", variance: "0.02%" },
-    ],
-  },
-  "2": {
-    name: "Customer Churn Rate",
-    status: "fail",
-    source: "Tableau",
-    dashboardValue: "4.2%",
-    calculatedValue: "6.8%",
-    variance: "38.1%",
-    confidence: "99.9%",
-    lastRun: "5 minutes ago",
-    query: "SELECT COUNT(DISTINCT user_id) / total_users FROM churned_users",
-    history: [
-      { time: "5 min ago", status: "fail", variance: "38.1%" },
-      { time: "1 hour ago", status: "fail", variance: "37.8%" },
-      { time: "2 hours ago", status: "fail", variance: "38.2%" },
-      { time: "3 hours ago", status: "pass", variance: "1.2%" },
-    ],
-  },
+export interface TestDetailContentProps {
+  testId: string
 }
 
-export function TestDetailContent({ testId }: { testId: string }) {
-  const test = testData[testId] || testData["1"]
+export function TestDetailContent({ testId }: TestDetailContentProps) {
+  const test = getTestDetailById(testId)
   const isPassing = test.status === "pass"
 
   return (
