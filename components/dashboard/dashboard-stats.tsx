@@ -1,4 +1,5 @@
 import { CheckCircle2, XCircle, Clock, AlertTriangle } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export function DashboardStats() {
   const stats = [
@@ -21,8 +22,4 @@ export function DashboardStats() {
       ))}
     </div>
   )
-}
-
-function cn(...classes: (string | boolean | undefined)[]) {
-  return classes.filter(Boolean).join(" ")
 }
