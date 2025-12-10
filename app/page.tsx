@@ -9,6 +9,7 @@ import { EnterButton } from "@/components/enter-button"
 import { FeaturesSection } from "@/components/features-section"
 import { Footer } from "@/components/footer"
 import { LiquidGlassNavbar } from "@/components/liquid-glass-navbar"
+import { Logo } from "@/components/logo"
 
 export default function LandingPage() {
   const [contentVisible, setContentVisible] = useState(false)
@@ -35,8 +36,8 @@ export default function LandingPage() {
           contentVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
         }`}
       >
-        <Link href="/" className="font-mono text-sm tracking-tight text-foreground">
-          /dev/truth
+        <Link href="/" className="flex items-center gap-2 text-[#cd9c60] hover:text-[#e0b080] transition-colors">
+          <Logo className="h-7 w-auto" />
         </Link>
         <div className="flex items-center gap-6">
           <Link

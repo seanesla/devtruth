@@ -420,19 +420,37 @@ function Scene({ scrollProgress, mode }: { scrollProgress: number; mode: SceneMo
   )
 }
 
-function LoadingOverlay({ visible }: { visible: boolean }) {
+function LoadingOverlay({
+  visible,
+  onAnimationComplete,
+}: {
+  visible: boolean
+  onAnimationComplete?: () => void
+}) {
+  // Dynamically import to avoid SSR issues with framer-motion
+  const [AnimatedLogo, setAnimatedLogo] = useState<React.ComponentType<{
+    onComplete?: () => void
+    size?: number
+  }> | null>(null)
+
+  useEffect(() => {
+    import("./animated-logo").then((mod) => setAnimatedLogo(() => mod.AnimatedLogo))
+  }, [])
+
   return (
     <div
       className={`fixed inset-0 z-50 bg-[#0a0908] flex items-center justify-center transition-opacity duration-700 ${
         visible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      <div className="relative">
-        <div className="w-20 h-20 border border-[#d4a574]/30 border-t-[#d4a574] rounded-full animate-spin" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-3 h-3 bg-[#d4a574] rounded-full animate-pulse" />
+      {AnimatedLogo ? (
+        <AnimatedLogo size={140} onComplete={onAnimationComplete} />
+      ) : (
+        // Fallback spinner while AnimatedLogo loads
+        <div className="relative">
+          <div className="w-20 h-20 border border-[#d4a574]/30 border-t-[#d4a574] rounded-full animate-spin" />
         </div>
-      </div>
+      )}
     </div>
   )
 }
@@ -442,10 +460,10 @@ function SceneBackgroundInner() {
   const { mode, scrollProgress, setScrollProgress } = useSceneMode()
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200)
-    return () => clearTimeout(timer)
-  }, [])
+  const handleAnimationComplete = () => {
+    // Small delay after animation completes for smooth transition
+    setTimeout(() => setLoading(false), 300)
+  }
 
   useEffect(() => {
     // Only track scroll in landing mode
@@ -466,7 +484,7 @@ function SceneBackgroundInner() {
 
   return (
     <>
-      <LoadingOverlay visible={loading} />
+      <LoadingOverlay visible={loading} onAnimationComplete={handleAnimationComplete} />
       <div className="fixed inset-0 -z-10">
         <Canvas camera={{ position: [0, 1.5, 8], fov: 50 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
           <color attach="background" args={["#0a0908"]} />
@@ -493,10 +511,9 @@ function SceneBackgroundFallback() {
   const [scrollProgress, setScrollProgress] = useState(0)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200)
-    return () => clearTimeout(timer)
-  }, [])
+  const handleAnimationComplete = () => {
+    setTimeout(() => setLoading(false), 300)
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -511,7 +528,7 @@ function SceneBackgroundFallback() {
 
   return (
     <>
-      <LoadingOverlay visible={loading} />
+      <LoadingOverlay visible={loading} onAnimationComplete={handleAnimationComplete} />
       <div className="fixed inset-0 -z-10">
         <Canvas camera={{ position: [0, 1.5, 8], fov: 50 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
           <color attach="background" args={["#0a0908"]} />
