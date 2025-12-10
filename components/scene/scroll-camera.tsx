@@ -1,18 +1,20 @@
 "use client"
 
+import type { MutableRefObject } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import * as THREE from "three"
 import type { SceneMode } from "@/lib/types"
 
 interface ScrollCameraProps {
-  scrollProgress: number
+  scrollProgressRef: MutableRefObject<number>
   mode: SceneMode
 }
 
-export function ScrollCamera({ scrollProgress, mode }: ScrollCameraProps) {
+export function ScrollCamera({ scrollProgressRef, mode }: ScrollCameraProps) {
   const { camera } = useThree()
 
   useFrame(() => {
+    const scrollProgress = scrollProgressRef.current
     let targetY: number
     let targetZ: number
     let lookY: number

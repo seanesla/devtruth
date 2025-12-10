@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useEffect, type MutableRefObject } from "react"
 import { useFrame } from "@react-three/fiber"
 import { MeshTransmissionMaterial, Float } from "@react-three/drei"
 import * as THREE from "three"
@@ -11,7 +11,7 @@ export type SectionType = "stats" | "problem" | "how" | "cta"
 
 interface SectionAccentProps {
   position: [number, number, number]
-  scrollProgress: number
+  scrollProgressRef: MutableRefObject<number>
   showAfter: number
   type: SectionType
   mode: SceneMode
@@ -19,7 +19,7 @@ interface SectionAccentProps {
 
 export function SectionAccent({
   position,
-  scrollProgress,
+  scrollProgressRef,
   showAfter,
   type,
   mode,
@@ -27,10 +27,30 @@ export function SectionAccent({
   const ref = useRef<THREE.Group>(null)
   const visibilityRef = useRef(0)
   const modeMultiplierRef = useRef(mode === "landing" ? 1 : 0)
+  const materialsRef = useRef<THREE.Material[]>([])
+  const materialsCachedRef = useRef(false)
+
+  // Cache material references once on mount (instead of traversing every frame)
+  useEffect(() => {
+    if (!ref.current || materialsCachedRef.current) return
+
+    const materials: THREE.Material[] = []
+    ref.current.traverse((child) => {
+      if (child instanceof THREE.Mesh && child.material) {
+        const mat = child.material as THREE.Material
+        if ('transparent' in mat && mat.transparent) {
+          materials.push(mat)
+        }
+      }
+    })
+    materialsRef.current = materials
+    materialsCachedRef.current = true
+  })
 
   useFrame((state) => {
     if (!ref.current) return
     const t = state.clock.elapsedTime
+    const scrollProgress = scrollProgressRef.current
 
     // Smoothly interpolate mode multiplier for fade transitions
     const targetModeMultiplier = mode === "landing" ? 1 : 0
@@ -59,15 +79,13 @@ export function SectionAccent({
     // Subtle float
     ref.current.position.y = position[1] + Math.sin(t * 0.5) * 0.2
 
-    // Update material opacity for smooth fading
-    ref.current.traverse((child) => {
-      if (child instanceof THREE.Mesh && child.material) {
-        const mat = child.material as THREE.MeshStandardMaterial
-        if (mat.opacity !== undefined && mat.transparent) {
-          mat.opacity = visibilityRef.current
-        }
+    // Update cached material opacities (no more traverse every frame)
+    const opacity = visibilityRef.current
+    for (const mat of materialsRef.current) {
+      if ('opacity' in mat) {
+        (mat as THREE.MeshStandardMaterial).opacity = opacity
       }
-    })
+    }
   })
 
   return (
@@ -81,23 +99,38 @@ export function SectionAccent({
 }
 
 function StatsAccent() {
+  const meshRef = useRef<THREE.InstancedMesh>(null)
+  const dummy = useRef(new THREE.Object3D()).current
+
+  // Set up instance matrices once on mount
+  useEffect(() => {
+    if (!meshRef.current) return
+    for (let i = 0; i < 16; i++) {
+      dummy.position.set(
+        ((i % 4) - 1.5) * 0.8,
+        Math.floor(i / 4 - 1.5) * 0.8,
+        0
+      )
+      dummy.scale.setScalar(0.2)
+      dummy.updateMatrix()
+      meshRef.current.setMatrixAt(i, dummy.matrix)
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true
+  }, [dummy])
+
   return (
-    <>
-      {Array.from({ length: 16 }).map((_, i) => (
-        <mesh key={i} position={[((i % 4) - 1.5) * 0.8, Math.floor(i / 4 - 1.5) * 0.8, 0]} scale={0.2}>
-          <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial
-            color={SCENE_COLORS.accent}
-            emissive={SCENE_COLORS.accent}
-            emissiveIntensity={i % 3 === 0 ? 0.8 : 0.2}
-            metalness={0.9}
-            roughness={0.1}
-            transparent
-            opacity={1}
-          />
-        </mesh>
-      ))}
-    </>
+    <instancedMesh ref={meshRef} args={[undefined, undefined, 16]}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial
+        color={SCENE_COLORS.accent}
+        emissive={SCENE_COLORS.accent}
+        emissiveIntensity={0.5}
+        metalness={0.9}
+        roughness={0.1}
+        transparent
+        opacity={1}
+      />
+    </instancedMesh>
   )
 }
 
@@ -142,7 +175,7 @@ function HowAccent() {
         {nodePositions.map((pos, i) => (
           <group key={i}>
             <mesh position={pos} scale={0.3}>
-              <sphereGeometry args={[1, 32, 32]} />
+              <sphereGeometry args={[1, 16, 16]} />
               <meshStandardMaterial
                 color={SCENE_COLORS.accent}
                 emissive={SCENE_COLORS.accent}
@@ -179,16 +212,17 @@ function CtaAccent() {
   return (
     <Float speed={1} rotationIntensity={0.4}>
       <mesh scale={1.2}>
-        <torusKnotGeometry args={[1, 0.3, 128, 32, 2, 3]} />
+        <torusKnotGeometry args={[1, 0.3, 64, 16, 2, 3]} />
         <MeshTransmissionMaterial
           backside
-          samples={8}
+          samples={4}
+          resolution={256}
           thickness={0.3}
-          chromaticAberration={0.5}
-          anisotropy={0.5}
-          distortion={0.3}
-          distortionScale={0.5}
-          temporalDistortion={0.2}
+          chromaticAberration={0.3}
+          anisotropy={0.3}
+          distortion={0.2}
+          distortionScale={0.3}
+          temporalDistortion={0.1}
           metalness={0.1}
           roughness={0}
           color={SCENE_COLORS.accent}

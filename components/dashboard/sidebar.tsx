@@ -3,15 +3,14 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { useIsMobile } from "@/hooks/use-mobile"
 import { LayoutDashboard, FlaskConical, Settings, FileText, Bell, ChevronLeft } from "lucide-react"
-import { useState } from "react"
+import { useState, memo } from "react"
 
 export interface SidebarProps {
   defaultCollapsed?: boolean
 }
 
-export function Sidebar({ defaultCollapsed = false }: SidebarProps) {
+export const Sidebar = memo(function Sidebar({ defaultCollapsed = false }: SidebarProps) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
 
@@ -71,4 +70,4 @@ export function Sidebar({ defaultCollapsed = false }: SidebarProps) {
       </nav>
     </aside>
   )
-}
+})

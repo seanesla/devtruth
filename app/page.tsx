@@ -69,6 +69,14 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12">
         <div className="relative z-10 max-w-3xl">
+          {/* Brand name - large and prominent */}
+          <p
+            className={`font-mono text-4xl md:text-6xl lg:text-7xl text-accent tracking-tight mb-4 transition-all duration-1000 delay-200 ${
+              heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+          >
+            /dev/truth
+          </p>
           <h1
             className={`text-5xl md:text-7xl lg:text-8xl font-serif leading-[0.9] tracking-tight mb-8 transition-all duration-1000 delay-400 ${
               heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"

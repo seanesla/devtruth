@@ -11,7 +11,7 @@ import { SceneBackgroundFallback } from "./fallback"
 
 // Inner component that uses the scene context
 function SceneBackgroundInner() {
-  const { mode, scrollProgress, setScrollProgress, isLoading, setIsLoading } = useSceneMode()
+  const { mode, scrollProgressRef, isLoading, setIsLoading } = useSceneMode()
 
   const handleAnimationComplete = () => {
     // Small delay after animation completes for smooth transition
@@ -37,7 +37,7 @@ function SceneBackgroundInner() {
     const handleScroll = () => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight
       const progress = maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 0
-      setScrollProgress(progress)
+      scrollProgressRef.current = progress
     }
 
     // Immediately calculate scroll position when entering landing mode
@@ -45,7 +45,7 @@ function SceneBackgroundInner() {
 
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [mode, isLoading, setScrollProgress])
+  }, [mode, isLoading, scrollProgressRef])
 
   return (
     <>
@@ -58,7 +58,7 @@ function SceneBackgroundInner() {
         >
           <color attach="background" args={[SCENE_COLORS.background]} />
           <fog attach="fog" args={[FOG.color, FOG.near, FOG.far]} />
-          <Scene scrollProgress={scrollProgress} mode={mode} />
+          <Scene scrollProgressRef={scrollProgressRef} mode={mode} />
         </Canvas>
       </div>
     </>
