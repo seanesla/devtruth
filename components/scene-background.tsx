@@ -11,6 +11,7 @@ function TruthCore({ scrollProgress, mode }: { scrollProgress: number; mode: Sce
   const innerRef = useRef<THREE.Mesh>(null)
   const middleRef = useRef<THREE.Mesh>(null)
   const outerRef = useRef<THREE.Mesh>(null)
+  const ringRefs = useRef<(THREE.Mesh | null)[]>([])
   const opacityRef = useRef(1)
 
   useFrame((state) => {
@@ -50,6 +51,12 @@ function TruthCore({ scrollProgress, mode }: { scrollProgress: number; mode: Sce
       outerRef.current.rotation.z = t * 0.08
       outerRef.current.rotation.y = -t * 0.05
     }
+    // Update ring opacity dynamically (not just at render time)
+    ringRefs.current.forEach((ring) => {
+      if (ring?.material) {
+        (ring.material as THREE.MeshStandardMaterial).opacity = opacityRef.current
+      }
+    })
 
     // Subtle breathing scale
     const breathe = 1 + Math.sin(t * 0.8) * 0.03
@@ -131,7 +138,7 @@ function TruthCore({ scrollProgress, mode }: { scrollProgress: number; mode: Sce
 
       {/* Orbital rings */}
       {[1.6, 2.2, 2.8].map((radius, i) => (
-        <mesh key={i} rotation={[Math.PI / 2 + i * 0.4, i * 0.3, 0]} scale={1}>
+        <mesh key={i} ref={(el) => { ringRefs.current[i] = el }} rotation={[Math.PI / 2 + i * 0.4, i * 0.3, 0]} scale={1}>
           <torusGeometry args={[radius, 0.015, 16, 100]} />
           <meshStandardMaterial
             color="#d4a574"
@@ -140,7 +147,7 @@ function TruthCore({ scrollProgress, mode }: { scrollProgress: number; mode: Sce
             metalness={0.9}
             roughness={0.1}
             transparent
-            opacity={opacityRef.current}
+            opacity={1}
           />
         </mesh>
       ))}
