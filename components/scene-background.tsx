@@ -21,7 +21,9 @@ function TruthCore({ scrollProgress, mode }: { scrollProgress: number; mode: Sce
     const targetOpacity = mode === "landing" ? 1 : 0
     opacityRef.current = THREE.MathUtils.lerp(opacityRef.current, targetOpacity, 0.05)
 
-    if (opacityRef.current < 0.01) {
+    // Only hide when fading OUT and nearly invisible (not when fading IN)
+    const isFadingOut = targetOpacity === 0
+    if (isFadingOut && opacityRef.current < 0.01) {
       groupRef.current.visible = false
       return
     }
@@ -53,16 +55,31 @@ function TruthCore({ scrollProgress, mode }: { scrollProgress: number; mode: Sce
     const breathe = 1 + Math.sin(t * 0.8) * 0.03
     groupRef.current.scale.setScalar(breathe * opacityRef.current)
 
-    // Position based on mode
+    // Calculate target positions based on mode - always lerp to prevent jumps
+    let targetY: number
+    let targetZ: number
+    let lerpSpeed = 0.05
+
     if (mode === "transitioning") {
       // Dive forward during transition
-      groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, -15, 0.03)
-      groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, -5, 0.02)
+      targetY = -5
+      targetZ = -15
+      lerpSpeed = 0.03
+    } else if (mode === "dashboard") {
+      // Hidden position for dashboard
+      targetY = -10
+      targetZ = -20
+      lerpSpeed = 0.02
     } else {
-      // Normal scroll-based position
-      groupRef.current.position.y = 1 - scrollProgress * 6
-      groupRef.current.position.z = -2 - scrollProgress * 8
+      // Landing mode - scroll-based position
+      targetY = 1 - scrollProgress * 6
+      targetZ = -2 - scrollProgress * 8
+      lerpSpeed = 0.08
     }
+
+    // Always lerp to target position to prevent jumps
+    groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, lerpSpeed)
+    groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, lerpSpeed)
   })
 
   return (
@@ -145,23 +162,52 @@ function SectionAccent({
   mode: SceneMode
 }) {
   const ref = useRef<THREE.Group>(null)
-
-  // Only show in landing mode
-  const modeMultiplier = mode === "landing" ? 1 : 0
-  const visibility = Math.max(0, Math.min(1, (scrollProgress - showAfter) * 4)) * modeMultiplier
+  const visibilityRef = useRef(0)
+  const modeMultiplierRef = useRef(mode === "landing" ? 1 : 0)
 
   useFrame((state) => {
     if (!ref.current) return
     const t = state.clock.elapsedTime
 
-    ref.current.scale.setScalar(visibility * (type === "cta" ? 1.5 : 1))
+    // Smoothly interpolate mode multiplier for fade transitions
+    const targetModeMultiplier = mode === "landing" ? 1 : 0
+    modeMultiplierRef.current = THREE.MathUtils.lerp(
+      modeMultiplierRef.current,
+      targetModeMultiplier,
+      0.08
+    )
+
+    // Calculate target visibility based on scroll position
+    const scrollVisibility = Math.max(0, Math.min(1, (scrollProgress - showAfter) * 4))
+    const targetVisibility = scrollVisibility * modeMultiplierRef.current
+
+    // Lerp toward target visibility for smooth transitions
+    visibilityRef.current = THREE.MathUtils.lerp(
+      visibilityRef.current,
+      targetVisibility,
+      0.1
+    )
+
+    // Apply visibility to scale (never return null - let scale handle it)
+    const scale = visibilityRef.current * (type === "cta" ? 1.5 : 1)
+    ref.current.scale.setScalar(scale)
     ref.current.rotation.y = t * 0.2
 
     // Subtle float
     ref.current.position.y = position[1] + Math.sin(t * 0.5) * 0.2
+
+    // Update material opacity for smooth fading
+    ref.current.traverse((child) => {
+      if (child instanceof THREE.Mesh && child.material) {
+        const mat = child.material as THREE.MeshStandardMaterial
+        if (mat.opacity !== undefined && mat.transparent) {
+          mat.opacity = visibilityRef.current
+        }
+      }
+    })
   })
 
-  if (visibility <= 0) return null
+  // Always render - scale handles visibility
 
   return (
     <group ref={ref} position={position}>
@@ -178,7 +224,7 @@ function SectionAccent({
                 metalness={0.9}
                 roughness={0.1}
                 transparent
-                opacity={visibility}
+                opacity={1}
               />
             </mesh>
           ))}
@@ -204,7 +250,7 @@ function SectionAccent({
                   metalness={0.8}
                   roughness={0.2}
                   transparent
-                  opacity={visibility}
+                  opacity={1}
                 />
               </mesh>
             ))}
@@ -231,7 +277,7 @@ function SectionAccent({
                     metalness={0.9}
                     roughness={0.1}
                     transparent
-                    opacity={visibility}
+                    opacity={1}
                   />
                 </mesh>
                 {i < 2 && (
@@ -245,7 +291,7 @@ function SectionAccent({
                       emissive="#d4a574"
                       emissiveIntensity={0.3}
                       transparent
-                      opacity={visibility * 0.6}
+                      opacity={0.6}
                     />
                   </mesh>
                 )}
@@ -285,6 +331,8 @@ function AmbientParticles({ scrollProgress, mode }: { scrollProgress: number; mo
   const meshRef = useRef<THREE.InstancedMesh>(null)
   const dummy = useMemo(() => new THREE.Object3D(), [])
   const velocitiesRef = useRef<THREE.Vector3[]>([])
+  const scaleMultipliersRef = useRef<number[]>([])
+  const prevModeRef = useRef<SceneMode>(mode)
 
   // Different particle counts for different modes
   const targetCount = mode === "dashboard" ? 15 : 40
@@ -306,6 +354,7 @@ function AmbientParticles({ scrollProgress, mode }: { scrollProgress: number; mo
       scale: 0.03 + Math.random() * 0.05,
     }))
     velocitiesRef.current = arr.map(() => new THREE.Vector3(0, 0, 0))
+    scaleMultipliersRef.current = arr.map(() => 1)
     return arr
   }, [])
 
@@ -313,31 +362,55 @@ function AmbientParticles({ scrollProgress, mode }: { scrollProgress: number; mo
     if (!meshRef.current) return
     const t = state.clock.elapsedTime
 
+    // Detect mode change and reset velocities when leaving transitioning
+    if (prevModeRef.current !== mode) {
+      prevModeRef.current = mode
+      if (mode !== "transitioning") {
+        // Reset velocities when exiting transition mode
+        velocitiesRef.current.forEach((v) => v.set(0, 0, 0))
+      }
+    }
+
     particles.forEach((p, i) => {
-      // Hide particles beyond the target count in dashboard mode
-      const isVisible = i < targetCount
+      // Lerp scale multiplier for smooth visibility transitions
+      const targetScale = i < targetCount ? 1 : 0
+      scaleMultipliersRef.current[i] = THREE.MathUtils.lerp(
+        scaleMultipliersRef.current[i],
+        targetScale,
+        0.05
+      )
 
       if (mode === "transitioning") {
-        // Scatter outward during transition
+        // Scatter outward during transition with damping
         const dir = p.position.clone().normalize()
         velocitiesRef.current[i].add(dir.multiplyScalar(0.02))
+        // Apply damping to prevent runaway velocities
+        velocitiesRef.current[i].multiplyScalar(0.98)
         p.position.add(velocitiesRef.current[i])
       } else if (mode === "dashboard") {
-        // Calm, slow drift in dashboard
+        // Lerp back toward base position first, then apply calm drift
+        p.position.lerp(p.basePosition, 0.03)
         const x = p.basePosition.x + Math.sin(t * p.speed * 0.3 + p.offset) * 1
         const y = p.basePosition.y + Math.cos(t * p.speed * 0.2) * 0.5
         const z = p.basePosition.z
-        p.position.set(x, y, z)
+        // Lerp to target position for smooth transition
+        p.position.x = THREE.MathUtils.lerp(p.position.x, x, 0.05)
+        p.position.y = THREE.MathUtils.lerp(p.position.y, y, 0.05)
+        p.position.z = THREE.MathUtils.lerp(p.position.z, z, 0.05)
       } else {
-        // Normal landing behavior
+        // Landing mode - lerp back toward base, then apply normal movement
+        p.position.lerp(p.basePosition, 0.02)
         const x = p.basePosition.x + Math.sin(t * p.speed + p.offset) * 2
         const y = p.basePosition.y + Math.cos(t * p.speed * 0.7) * 1.5 - scrollProgress * 15
         const z = p.basePosition.z
-        p.position.set(x, y, z)
+        // Lerp to target for smooth recovery from scattered positions
+        p.position.x = THREE.MathUtils.lerp(p.position.x, x, 0.08)
+        p.position.y = THREE.MathUtils.lerp(p.position.y, y, 0.08)
+        p.position.z = THREE.MathUtils.lerp(p.position.z, z, 0.08)
       }
 
       dummy.position.copy(p.position)
-      dummy.scale.setScalar(isVisible ? p.scale : 0)
+      dummy.scale.setScalar(p.scale * scaleMultipliersRef.current[i])
       dummy.updateMatrix()
       meshRef.current!.setMatrixAt(i, dummy.matrix)
     })
@@ -457,17 +530,28 @@ function LoadingOverlay({
 
 // Inner component that uses the scene context
 function SceneBackgroundInner() {
-  const { mode, scrollProgress, setScrollProgress } = useSceneMode()
-  const [loading, setLoading] = useState(true)
+  const { mode, scrollProgress, setScrollProgress, isLoading, setIsLoading } = useSceneMode()
 
   const handleAnimationComplete = () => {
     // Small delay after animation completes for smooth transition
-    setTimeout(() => setLoading(false), 300)
+    setTimeout(() => setIsLoading(false), 300)
   }
 
+  // Disable body scroll during loading animation
   useEffect(() => {
-    // Only track scroll in landing mode
-    if (mode !== "landing") return
+    if (isLoading) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [isLoading])
+
+  useEffect(() => {
+    // Only track scroll in landing mode and when not loading
+    if (mode !== "landing" || isLoading) return
 
     const handleScroll = () => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight
@@ -480,11 +564,11 @@ function SceneBackgroundInner() {
 
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [mode, setScrollProgress])
+  }, [mode, isLoading, setScrollProgress])
 
   return (
     <>
-      <LoadingOverlay visible={loading} onAnimationComplete={handleAnimationComplete} />
+      <LoadingOverlay visible={isLoading} onAnimationComplete={handleAnimationComplete} />
       <div className="fixed inset-0 -z-10">
         <Canvas camera={{ position: [0, 1.5, 8], fov: 50 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
           <color attach="background" args={["#0a0908"]} />
