@@ -3,12 +3,17 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { LayoutDashboard, FlaskConical, Settings, FileText, Bell, ChevronLeft } from "lucide-react"
 import { useState } from "react"
 
-export function Sidebar() {
+export interface SidebarProps {
+  defaultCollapsed?: boolean
+}
+
+export function Sidebar({ defaultCollapsed = false }: SidebarProps) {
   const pathname = usePathname()
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(defaultCollapsed)
 
   const navItems = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
