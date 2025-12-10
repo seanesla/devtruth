@@ -29,19 +29,30 @@ pnpm start     # Start production server
 - `components/` - React components
   - `ui/` - shadcn/ui primitives
   - `dashboard/` - Dashboard-specific components
+  - `scene/` - React Three Fiber 3D scene components (modular: `truth-core.tsx`, `ambient-particles.tsx`, `scroll-camera.tsx`, etc.)
   - Landing page sections: `hero-section.tsx`, `stats-section.tsx`, `how-it-works-section.tsx`, `features-section.tsx`, `cta-section.tsx`
-- `lib/` - Shared utilities and context
+- `lib/` - Shared utilities, context, types, and data
   - `utils.ts` - `cn()` utility for class merging
+  - `types.ts` - Shared TypeScript interfaces (`TestStatus`, `TestSummary`, `TestDetail`)
+  - `constants.ts` - App-wide constants (breakpoints, colors, animation timing)
   - `scene-context.tsx` - 3D scene mode state (landing/transitioning/dashboard)
+  - `data/mock-tests.ts` - Single source of truth for test data
 
 ### 3D Scene System
 
 The app uses React Three Fiber (`@react-three/fiber`, `@react-three/drei`) for an interactive 3D background:
 
-- `SceneProvider` in `lib/scene-context.tsx` manages scene mode and scroll progress
-- `SceneBackground` component renders the persistent 3D canvas
+- `SceneProvider` in `lib/scene-context.tsx` manages scene mode, scroll progress, and loading state
+- `SceneBackground` component (`components/scene/index.tsx`) renders the persistent 3D canvas
 - Scene modes: `"landing"` (scroll-reactive), `"transitioning"` (route change animation), `"dashboard"` (minimal particles)
+- Scene components are modular in `components/scene/`: `TruthCore`, `AmbientParticles`, `ScrollCamera`, `SectionAccent`, `LoadingOverlay`
 - Provider hierarchy in `components/providers.tsx`: ViewTransitions → SceneProvider → SceneBackground
+
+### Data Flow
+
+- Mock test data defined in `lib/data/mock-tests.ts` with helper functions (`getTestById`, `getTestDetailById`)
+- Types in `lib/types.ts` define `TestSummary` (for lists) and `TestDetail` (for detail pages)
+- Dashboard components import data directly from `lib/data/mock-tests.ts`
 
 ### Key Patterns
 
@@ -52,6 +63,7 @@ The app uses React Three Fiber (`@react-three/fiber`, `@react-three/drei`) for a
 - Color palette: warm dark with amber accent (`#d4a574`), uses OKLCH color space in CSS variables
 - View transitions via `next-view-transitions` for page navigation
 - Framer Motion for logo and UI animations
+- Lenis for smooth scrolling (configured in `lib/constants.ts`)
 
 ### Component Imports
 
@@ -59,4 +71,6 @@ The app uses React Three Fiber (`@react-three/fiber`, `@react-three/drei`) for a
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useSceneMode } from "@/lib/scene-context"
+import { mockTests, getTestById } from "@/lib/data/mock-tests"
+import type { TestSummary, TestStatus } from "@/lib/types"
 ```
