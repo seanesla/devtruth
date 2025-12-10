@@ -86,8 +86,8 @@ export default function LandingPage() {
       </section>
 
       {/* Stats */}
-      <ScrollReveal>
-        <section className="border-t border-border/50 bg-background/40 backdrop-blur-xl">
+      <section className="border-t border-border/50 bg-background/40 backdrop-blur-xl">
+        <ScrollReveal>
           <div className="grid grid-cols-2 md:grid-cols-4">
             {[
               { value: "2M+", label: "KPIs validated daily" },
@@ -110,12 +110,12 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-        </section>
-      </ScrollReveal>
+        </ScrollReveal>
+      </section>
 
       {/* The Problem */}
-      <ScrollReveal>
-        <section className="py-32 px-6 md:px-12 bg-background/50 backdrop-blur-xl">
+      <section className="py-32 px-6 md:px-12 bg-background/50 backdrop-blur-xl">
+        <ScrollReveal>
           <div className="max-w-7xl mx-auto">
             <div className="grid lg:grid-cols-12 gap-12 lg:gap-24">
               <div className="lg:col-span-5">
@@ -138,19 +138,19 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-        </section>
-      </ScrollReveal>
+        </ScrollReveal>
+      </section>
 
       {/* Features */}
-      <ScrollReveal>
-        <section id="features" className="bg-background/40 backdrop-blur-xl">
+      <section id="features" className="bg-background/40 backdrop-blur-xl">
+        <ScrollReveal>
           <FeaturesSection />
-        </section>
-      </ScrollReveal>
+        </ScrollReveal>
+      </section>
 
       {/* How it works */}
-      <ScrollReveal>
-        <section id="how-it-works" className="py-32 px-6 md:px-12 bg-card/50 backdrop-blur-xl">
+      <section id="how-it-works" className="py-32 px-6 md:px-12 bg-card/50 backdrop-blur-xl">
+        <ScrollReveal>
           <div className="max-w-7xl mx-auto">
             <p className="text-xs uppercase tracking-widest text-muted-foreground mb-16">How It Works</p>
 
@@ -191,12 +191,12 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
-        </section>
-      </ScrollReveal>
+        </ScrollReveal>
+      </section>
 
       {/* CTA */}
-      <ScrollReveal>
-        <section className="py-32 px-6 md:px-12 bg-background/50 backdrop-blur-xl">
+      <section className="py-32 px-6 md:px-12 bg-background/50 backdrop-blur-xl">
+        <ScrollReveal>
           <div className="max-w-7xl mx-auto text-center">
             <h2 className="text-5xl md:text-7xl font-serif mb-8">Stop guessing.</h2>
             <p className="text-muted-foreground text-xl mb-12 max-w-md mx-auto">
@@ -204,8 +204,8 @@ export default function LandingPage() {
             </p>
             <EnterButton variant="cta" />
           </div>
-        </section>
-      </ScrollReveal>
+        </ScrollReveal>
+      </section>
 
       {/* Footer */}
       <div className="bg-background/70 backdrop-blur-xl">
