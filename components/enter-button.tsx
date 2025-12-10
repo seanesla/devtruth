@@ -16,13 +16,10 @@ export function EnterButton({ className, variant = "hero", children }: EnterButt
   const router = useTransitionRouter()
 
   const handleClick = () => {
-    // Trigger the 3D transition
+    // Trigger the 3D transition and navigate immediately
+    // The scene will animate during page transition (like dashboard→landing does)
     setMode("transitioning")
-
-    // Navigate after letting the transition start
-    setTimeout(() => {
-      router.push("/dashboard")
-    }, 800)
+    router.push("/dashboard")
   }
 
   if (variant === "nav") {

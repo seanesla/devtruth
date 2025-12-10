@@ -64,7 +64,7 @@ function TruthCore({ scrollProgress, mode }: { scrollProgress: number; mode: Sce
       // Dive forward during transition
       targetY = -5
       targetZ = -15
-      lerpSpeed = 0.03
+      lerpSpeed = 0.08
     } else if (mode === "dashboard") {
       // Hidden position for dashboard
       targetY = -10
@@ -439,8 +439,8 @@ function ScrollCamera({ scrollProgress, mode }: { scrollProgress: number; mode: 
       targetZ = -5
       lookY = -10
 
-      camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.02)
-      camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.02)
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.06)
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.06)
     } else if (mode === "dashboard") {
       // Static, distant camera for dashboard
       targetY = 0
