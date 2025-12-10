@@ -44,7 +44,7 @@ Over time, copies, tweaks, and quick fixes cause **metric drift**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  Same KPI name    →    Different meanings    →    Lost trust   │
+│  Same KPI name    →    Different meanings    →    Lost trust    │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
