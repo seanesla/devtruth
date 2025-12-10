@@ -453,9 +453,12 @@ function SceneBackgroundInner() {
 
     const handleScroll = () => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-      const progress = Math.min(1, window.scrollY / maxScroll)
+      const progress = maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 0
       setScrollProgress(progress)
     }
+
+    // Immediately calculate scroll position when entering landing mode
+    handleScroll()
 
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
