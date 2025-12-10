@@ -2,7 +2,13 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, RotateCw, Settings } from "lucide-react"
 
-export function TestDetailHeader({ testId }: { testId: string }) {
+export interface TestDetailHeaderProps {
+  testId: string
+  onRerun?: () => void
+  onSettings?: () => void
+}
+
+export function TestDetailHeader({ testId, onRerun, onSettings }: TestDetailHeaderProps) {
   return (
     <header className="flex h-16 items-center justify-between border-b border-border bg-card/50 px-6 lg:px-8">
       <div className="flex items-center gap-4">
@@ -15,11 +21,11 @@ export function TestDetailHeader({ testId }: { testId: string }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={onRerun}>
           <RotateCw className="mr-2 h-4 w-4" />
           Re-run
         </Button>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" onClick={onSettings}>
           <Settings className="h-4 w-4" />
         </Button>
       </div>
