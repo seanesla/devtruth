@@ -4,16 +4,28 @@ import { useRef, useMemo, useState, useEffect } from "react"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { MeshTransmissionMaterial, Environment, Float } from "@react-three/drei"
 import * as THREE from "three"
+import { useSceneMode, type SceneMode } from "@/lib/scene-context"
 
-function TruthCore({ scrollProgress }: { scrollProgress: number }) {
+function TruthCore({ scrollProgress, mode }: { scrollProgress: number; mode: SceneMode }) {
   const groupRef = useRef<THREE.Group>(null)
   const innerRef = useRef<THREE.Mesh>(null)
   const middleRef = useRef<THREE.Mesh>(null)
   const outerRef = useRef<THREE.Mesh>(null)
+  const opacityRef = useRef(1)
 
   useFrame((state) => {
     if (!groupRef.current) return
     const t = state.clock.elapsedTime
+
+    // Fade out during transition and dashboard
+    const targetOpacity = mode === "landing" ? 1 : 0
+    opacityRef.current = THREE.MathUtils.lerp(opacityRef.current, targetOpacity, 0.05)
+
+    if (opacityRef.current < 0.01) {
+      groupRef.current.visible = false
+      return
+    }
+    groupRef.current.visible = true
 
     // Slow rotation that responds to scroll
     groupRef.current.rotation.y = t * 0.1 + scrollProgress * Math.PI
@@ -23,10 +35,14 @@ function TruthCore({ scrollProgress }: { scrollProgress: number }) {
     if (innerRef.current) {
       innerRef.current.rotation.x = t * 0.4
       innerRef.current.rotation.z = t * 0.3
+      // @ts-ignore
+      if (innerRef.current.material) innerRef.current.material.opacity = opacityRef.current
     }
     if (middleRef.current) {
       middleRef.current.rotation.y = -t * 0.2
       middleRef.current.rotation.x = t * 0.15
+      // @ts-ignore
+      if (middleRef.current.material) middleRef.current.material.opacity = opacityRef.current * 0.6
     }
     if (outerRef.current) {
       outerRef.current.rotation.z = t * 0.08
@@ -35,11 +51,18 @@ function TruthCore({ scrollProgress }: { scrollProgress: number }) {
 
     // Subtle breathing scale
     const breathe = 1 + Math.sin(t * 0.8) * 0.03
-    groupRef.current.scale.setScalar(breathe)
+    groupRef.current.scale.setScalar(breathe * opacityRef.current)
 
-    // Move down and scale up as user scrolls
-    groupRef.current.position.y = 1 - scrollProgress * 6
-    groupRef.current.position.z = -2 - scrollProgress * 8
+    // Position based on mode
+    if (mode === "transitioning") {
+      // Dive forward during transition
+      groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, -15, 0.03)
+      groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, -5, 0.02)
+    } else {
+      // Normal scroll-based position
+      groupRef.current.position.y = 1 - scrollProgress * 6
+      groupRef.current.position.z = -2 - scrollProgress * 8
+    }
   })
 
   return (
@@ -53,6 +76,7 @@ function TruthCore({ scrollProgress }: { scrollProgress: number }) {
           emissiveIntensity={1.5}
           metalness={0.9}
           roughness={0.1}
+          transparent
         />
       </mesh>
 
@@ -98,6 +122,8 @@ function TruthCore({ scrollProgress }: { scrollProgress: number }) {
             emissiveIntensity={0.5 - i * 0.1}
             metalness={0.9}
             roughness={0.1}
+            transparent
+            opacity={opacityRef.current}
           />
         </mesh>
       ))}
@@ -110,14 +136,19 @@ function SectionAccent({
   scrollProgress,
   showAfter,
   type,
+  mode,
 }: {
   position: [number, number, number]
   scrollProgress: number
   showAfter: number
   type: "stats" | "problem" | "how" | "cta"
+  mode: SceneMode
 }) {
   const ref = useRef<THREE.Group>(null)
-  const visibility = Math.max(0, Math.min(1, (scrollProgress - showAfter) * 4))
+
+  // Only show in landing mode
+  const modeMultiplier = mode === "landing" ? 1 : 0
+  const visibility = Math.max(0, Math.min(1, (scrollProgress - showAfter) * 4)) * modeMultiplier
 
   useFrame((state) => {
     if (!ref.current) return
@@ -250,21 +281,32 @@ function SectionAccent({
   )
 }
 
-function AmbientParticles({ scrollProgress }: { scrollProgress: number }) {
+function AmbientParticles({ scrollProgress, mode }: { scrollProgress: number; mode: SceneMode }) {
   const meshRef = useRef<THREE.InstancedMesh>(null)
   const dummy = useMemo(() => new THREE.Object3D(), [])
+  const velocitiesRef = useRef<THREE.Vector3[]>([])
+
+  // Different particle counts for different modes
+  const targetCount = mode === "dashboard" ? 15 : 40
 
   const particles = useMemo(() => {
-    return Array.from({ length: 40 }, (_, i) => ({
-      position: [(Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 20 - 10] as [
-        number,
-        number,
-        number,
-      ],
+    const arr = Array.from({ length: 40 }, (_, i) => ({
+      position: new THREE.Vector3(
+        (Math.random() - 0.5) * 30,
+        (Math.random() - 0.5) * 30,
+        (Math.random() - 0.5) * 20 - 10
+      ),
+      basePosition: new THREE.Vector3(
+        (Math.random() - 0.5) * 30,
+        (Math.random() - 0.5) * 30,
+        (Math.random() - 0.5) * 20 - 10
+      ),
       speed: Math.random() * 0.3 + 0.1,
       offset: Math.random() * Math.PI * 2,
       scale: 0.03 + Math.random() * 0.05,
     }))
+    velocitiesRef.current = arr.map(() => new THREE.Vector3(0, 0, 0))
+    return arr
   }, [])
 
   useFrame((state) => {
@@ -272,12 +314,30 @@ function AmbientParticles({ scrollProgress }: { scrollProgress: number }) {
     const t = state.clock.elapsedTime
 
     particles.forEach((p, i) => {
-      const x = p.position[0] + Math.sin(t * p.speed + p.offset) * 2
-      const y = p.position[1] + Math.cos(t * p.speed * 0.7) * 1.5 - scrollProgress * 15
-      const z = p.position[2]
+      // Hide particles beyond the target count in dashboard mode
+      const isVisible = i < targetCount
 
-      dummy.position.set(x, y, z)
-      dummy.scale.setScalar(p.scale)
+      if (mode === "transitioning") {
+        // Scatter outward during transition
+        const dir = p.position.clone().normalize()
+        velocitiesRef.current[i].add(dir.multiplyScalar(0.02))
+        p.position.add(velocitiesRef.current[i])
+      } else if (mode === "dashboard") {
+        // Calm, slow drift in dashboard
+        const x = p.basePosition.x + Math.sin(t * p.speed * 0.3 + p.offset) * 1
+        const y = p.basePosition.y + Math.cos(t * p.speed * 0.2) * 0.5
+        const z = p.basePosition.z
+        p.position.set(x, y, z)
+      } else {
+        // Normal landing behavior
+        const x = p.basePosition.x + Math.sin(t * p.speed + p.offset) * 2
+        const y = p.basePosition.y + Math.cos(t * p.speed * 0.7) * 1.5 - scrollProgress * 15
+        const z = p.basePosition.z
+        p.position.set(x, y, z)
+      }
+
+      dummy.position.copy(p.position)
+      dummy.scale.setScalar(isVisible ? p.scale : 0)
       dummy.updateMatrix()
       meshRef.current!.setMatrixAt(i, dummy.matrix)
     })
@@ -292,26 +352,47 @@ function AmbientParticles({ scrollProgress }: { scrollProgress: number }) {
   )
 }
 
-function ScrollCamera({ scrollProgress }: { scrollProgress: number }) {
+function ScrollCamera({ scrollProgress, mode }: { scrollProgress: number; mode: SceneMode }) {
   const { camera } = useThree()
 
   useFrame(() => {
-    // Camera path: starts centered, moves down and back as scroll progresses
-    const targetY = 1.5 - scrollProgress * 4
-    const targetZ = 8 + scrollProgress * 3
+    let targetY: number
+    let targetZ: number
+    let lookY: number
 
-    camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.03)
-    camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.03)
+    if (mode === "transitioning") {
+      // Camera dives forward during transition
+      targetY = -2
+      targetZ = -5
+      lookY = -10
 
-    // Look at a point that moves with scroll
-    const lookY = 0.5 - scrollProgress * 5
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.02)
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.02)
+    } else if (mode === "dashboard") {
+      // Static, distant camera for dashboard
+      targetY = 0
+      targetZ = 15
+      lookY = 0
+
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.05)
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.05)
+    } else {
+      // Normal landing scroll behavior
+      targetY = 1.5 - scrollProgress * 4
+      targetZ = 8 + scrollProgress * 3
+      lookY = 0.5 - scrollProgress * 5
+
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, targetY, 0.03)
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, 0.03)
+    }
+
     camera.lookAt(0, lookY, -5)
   })
 
   return null
 }
 
-function Scene({ scrollProgress }: { scrollProgress: number }) {
+function Scene({ scrollProgress, mode }: { scrollProgress: number; mode: SceneMode }) {
   return (
     <>
       {/* Lighting */}
@@ -322,19 +403,19 @@ function Scene({ scrollProgress }: { scrollProgress: number }) {
 
       <Environment preset="night" />
 
-      <ScrollCamera scrollProgress={scrollProgress} />
+      <ScrollCamera scrollProgress={scrollProgress} mode={mode} />
 
       {/* THE focal point - always visible, transforms with scroll */}
-      <TruthCore scrollProgress={scrollProgress} />
+      <TruthCore scrollProgress={scrollProgress} mode={mode} />
 
       {/* Section-specific accents that fade in */}
-      <SectionAccent position={[-6, -4, -8]} scrollProgress={scrollProgress} showAfter={0.1} type="stats" />
-      <SectionAccent position={[7, -10, -6]} scrollProgress={scrollProgress} showAfter={0.25} type="problem" />
-      <SectionAccent position={[-5, -18, -5]} scrollProgress={scrollProgress} showAfter={0.45} type="how" />
-      <SectionAccent position={[0, -28, -4]} scrollProgress={scrollProgress} showAfter={0.7} type="cta" />
+      <SectionAccent position={[-6, -4, -8]} scrollProgress={scrollProgress} showAfter={0.1} type="stats" mode={mode} />
+      <SectionAccent position={[7, -10, -6]} scrollProgress={scrollProgress} showAfter={0.25} type="problem" mode={mode} />
+      <SectionAccent position={[-5, -18, -5]} scrollProgress={scrollProgress} showAfter={0.45} type="how" mode={mode} />
+      <SectionAccent position={[0, -28, -4]} scrollProgress={scrollProgress} showAfter={0.7} type="cta" mode={mode} />
 
       {/* Subtle ambient particles */}
-      <AmbientParticles scrollProgress={scrollProgress} />
+      <AmbientParticles scrollProgress={scrollProgress} mode={mode} />
     </>
   )
 }
@@ -356,7 +437,56 @@ function LoadingOverlay({ visible }: { visible: boolean }) {
   )
 }
 
+// Inner component that uses the scene context
+function SceneBackgroundInner() {
+  const { mode, scrollProgress, setScrollProgress } = useSceneMode()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1200)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    // Only track scroll in landing mode
+    if (mode !== "landing") return
+
+    const handleScroll = () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+      const progress = Math.min(1, window.scrollY / maxScroll)
+      setScrollProgress(progress)
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [mode, setScrollProgress])
+
+  return (
+    <>
+      <LoadingOverlay visible={loading} />
+      <div className="fixed inset-0 -z-10">
+        <Canvas camera={{ position: [0, 1.5, 8], fov: 50 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
+          <color attach="background" args={["#0a0908"]} />
+          <fog attach="fog" args={["#0a0908", 15, 40]} />
+          <Scene scrollProgress={scrollProgress} mode={mode} />
+        </Canvas>
+      </div>
+    </>
+  )
+}
+
+// Wrapper that safely handles missing context (for backwards compatibility)
 export default function SceneBackground() {
+  try {
+    return <SceneBackgroundInner />
+  } catch {
+    // Fallback if used outside provider (backwards compatible)
+    return <SceneBackgroundFallback />
+  }
+}
+
+// Fallback component for backwards compatibility
+function SceneBackgroundFallback() {
   const [scrollProgress, setScrollProgress] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -383,7 +513,7 @@ export default function SceneBackground() {
         <Canvas camera={{ position: [0, 1.5, 8], fov: 50 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
           <color attach="background" args={["#0a0908"]} />
           <fog attach="fog" args={["#0a0908", 15, 40]} />
-          <Scene scrollProgress={scrollProgress} />
+          <Scene scrollProgress={scrollProgress} mode="landing" />
         </Canvas>
       </div>
     </>
