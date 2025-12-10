@@ -88,19 +88,12 @@ export default function LandingPage() {
             /dev/truth validates every KPI against ground truth. Find the drift before it finds you.
           </p>
 
-          {/* Dual CTA */}
           <div
-            className={`flex items-center gap-6 transition-all duration-1000 delay-800 ${
+            className={`transition-all duration-1000 delay-800 ${
               heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
             <EnterButton variant="hero" />
-            <Link
-              href="#how-it-works"
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-            >
-              See how it works
-            </Link>
           </div>
         </div>
 
