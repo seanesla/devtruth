@@ -7,8 +7,6 @@ import { useSceneMode } from "@/lib/scene-context"
 import { cn } from "@/lib/utils"
 import { mockTests } from "@/lib/data/mock-tests"
 import { StatusIndicator, statusConfig } from "@/components/ui/status-indicator"
-import { LiquidGlassNavbar } from "@/components/liquid-glass-navbar"
-import { Logo } from "@/components/logo"
 
 export default function DashboardPage() {
   const { setMode } = useSceneMode()
@@ -45,35 +43,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-transparent">
-      {/* Liquid Glass Nav - same component as landing */}
-      <LiquidGlassNavbar
-        className={cn(
-          "transition-all duration-1000",
-          visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-        )}
-      >
-        <Link href="/" className="flex items-center gap-2 text-accent hover:text-[#e0b080] transition-colors">
-          <Logo className="h-7 w-auto" />
-        </Link>
-        <nav className="flex items-center gap-6">
-          <Link href="/dashboard" className="text-sm text-foreground">
-            Overview
-          </Link>
-          <Link
-            href="/dashboard/tests"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Tests
-          </Link>
-          <Link
-            href="/dashboard/settings"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Settings
-          </Link>
-        </nav>
-      </LiquidGlassNavbar>
-
       <main className="px-6 md:px-12 pt-28 pb-12 max-w-7xl mx-auto">
         {/* Page title - editorial style with enhanced typography */}
         <div

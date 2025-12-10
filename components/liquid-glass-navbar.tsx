@@ -121,16 +121,16 @@ export function LiquidGlassNavbar({ children, className = "" }: LiquidGlassNavba
         style={{
           backdropFilter:
             supportsFilter && displacementMap
-              ? `url(#${filterId}) blur(12px) saturate(180%)`
-              : "blur(20px) saturate(180%)",
-          WebkitBackdropFilter: "blur(20px) saturate(180%)",
-          background: "rgba(255, 255, 255, 0.04)",
-          border: "1px solid rgba(255, 255, 255, 0.08)",
+              ? `url(#${filterId}) blur(16px) saturate(200%)`
+              : "blur(24px) saturate(200%)",
+          WebkitBackdropFilter: "blur(24px) saturate(200%)",
+          background: "rgba(255, 255, 255, 0.02)",
+          border: "1px solid rgba(255, 255, 255, 0.05)",
           boxShadow: `
-            inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
-            inset 0 -1px 0 0 rgba(0, 0, 0, 0.05),
-            0 8px 32px rgba(0, 0, 0, 0.4),
-            0 2px 8px rgba(0, 0, 0, 0.2)
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
+            inset 0 -1px 0 0 rgba(0, 0, 0, 0.02),
+            0 8px 32px rgba(0, 0, 0, 0.25),
+            0 2px 8px rgba(0, 0, 0, 0.1)
           `,
         }}
       >
@@ -139,7 +139,7 @@ export function LiquidGlassNavbar({ children, className = "" }: LiquidGlassNavba
           className="relative px-6 py-3 flex items-center gap-8"
           style={{
             background:
-              "linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%)",
+              "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%)",
           }}
         >
           {children}

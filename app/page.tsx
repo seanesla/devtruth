@@ -1,23 +1,23 @@
 "use client"
 
 import type React from "react"
-import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import { useSceneMode } from "@/lib/scene-context"
 import { useLenis } from "@/hooks/use-lenis"
+import { useSectionObserver } from "@/hooks/use-section-observer"
 import { EnterButton } from "@/components/enter-button"
 import { FeaturesSection } from "@/components/features-section"
 import { Footer } from "@/components/footer"
-import { LiquidGlassNavbar } from "@/components/liquid-glass-navbar"
-import { Logo } from "@/components/logo"
 
 export default function LandingPage() {
   const [heroVisible, setHeroVisible] = useState(false)
-  const [navVisible, setNavVisible] = useState(false)
   const { resetToLanding, isLoading } = useSceneMode()
 
   // Smooth scroll with inertia
   useLenis()
+
+  // Scroll-aware section detection for navbar
+  useSectionObserver()
 
   // Reset scene to landing mode when this page mounts
   useEffect(() => {
@@ -29,43 +29,12 @@ export default function LandingPage() {
     if (!isLoading) {
       // Loading just finished - show hero after small delay
       const heroTimer = setTimeout(() => setHeroVisible(true), 200)
-      // Show navbar after hero starts appearing
-      const navTimer = setTimeout(() => setNavVisible(true), 600)
-      return () => {
-        clearTimeout(heroTimer)
-        clearTimeout(navTimer)
-      }
+      return () => clearTimeout(heroTimer)
     }
   }, [isLoading])
 
   return (
     <div className="min-h-screen bg-transparent overflow-x-hidden">
-      {/* Liquid Glass Nav */}
-      <LiquidGlassNavbar
-        className={`transition-all duration-1000 ${
-          navVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-        }`}
-      >
-        <Link href="/" className="flex items-center gap-2 text-[#cd9c60] hover:text-[#e0b080] transition-colors">
-          <Logo className="h-7 w-auto" />
-        </Link>
-        <div className="flex items-center gap-6">
-          <Link
-            href="#features"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block"
-          >
-            Features
-          </Link>
-          <Link
-            href="#how-it-works"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block"
-          >
-            How It Works
-          </Link>
-          <EnterButton variant="nav" />
-        </div>
-      </LiquidGlassNavbar>
-
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12">
         <div className="relative z-10 max-w-3xl">
