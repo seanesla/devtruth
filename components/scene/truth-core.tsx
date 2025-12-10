@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, type MutableRefObject } from "react"
 import { useFrame } from "@react-three/fiber"
 import { MeshTransmissionMaterial } from "@react-three/drei"
 import * as THREE from "three"
@@ -9,11 +9,11 @@ import { SCENE_COLORS } from "@/lib/constants"
 import { ORBITAL_RINGS } from "./constants"
 
 interface TruthCoreProps {
-  scrollProgress: number
+  scrollProgressRef: MutableRefObject<number>
   mode: SceneMode
 }
 
-export function TruthCore({ scrollProgress, mode }: TruthCoreProps) {
+export function TruthCore({ scrollProgressRef, mode }: TruthCoreProps) {
   const groupRef = useRef<THREE.Group>(null)
   const innerRef = useRef<THREE.Mesh>(null)
   const middleRef = useRef<THREE.Mesh>(null)
@@ -24,6 +24,7 @@ export function TruthCore({ scrollProgress, mode }: TruthCoreProps) {
   useFrame((state) => {
     if (!groupRef.current) return
     const t = state.clock.elapsedTime
+    const scrollProgress = scrollProgressRef.current
 
     // Fade out during transition and dashboard
     const targetOpacity = mode === "landing" ? 1 : 0

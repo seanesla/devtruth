@@ -1,14 +1,13 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
+import { createContext, useContext, useState, useCallback, useRef, useMemo, type ReactNode, type MutableRefObject } from "react"
 
 export type SceneMode = "landing" | "transitioning" | "dashboard"
 
 interface SceneContextValue {
   mode: SceneMode
   setMode: (mode: SceneMode) => void
-  scrollProgress: number
-  setScrollProgress: (progress: number) => void
+  scrollProgressRef: MutableRefObject<number>
   resetToLanding: () => void
   isLoading: boolean
   setIsLoading: (loading: boolean) => void
@@ -18,7 +17,7 @@ const SceneContext = createContext<SceneContextValue | null>(null)
 
 export function SceneProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<SceneMode>("landing")
-  const [scrollProgress, setScrollProgress] = useState(0)
+  const scrollProgressRef = useRef(0)
   const [isLoading, setIsLoading] = useState(true)
 
   const setMode = useCallback((newMode: SceneMode) => {
@@ -27,14 +26,23 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   const resetToLanding = useCallback(() => {
     setModeState("landing")
-    setScrollProgress(0)
+    scrollProgressRef.current = 0
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior })
     }
   }, [])
 
+  const contextValue = useMemo(() => ({
+    mode,
+    setMode,
+    scrollProgressRef,
+    resetToLanding,
+    isLoading,
+    setIsLoading,
+  }), [mode, isLoading, setMode, resetToLanding])
+
   return (
-    <SceneContext.Provider value={{ mode, setMode, scrollProgress, setScrollProgress, resetToLanding, isLoading, setIsLoading }}>
+    <SceneContext.Provider value={contextValue}>
       {children}
     </SceneContext.Provider>
   )

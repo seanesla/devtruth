@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useMemo } from "react"
+import { useRef, useMemo, type MutableRefObject } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
 import type { SceneMode } from "@/lib/types"
@@ -8,13 +8,14 @@ import { SCENE_COLORS } from "@/lib/constants"
 import { PARTICLES } from "./constants"
 
 interface AmbientParticlesProps {
-  scrollProgress: number
+  scrollProgressRef: MutableRefObject<number>
   mode: SceneMode
 }
 
-export function AmbientParticles({ scrollProgress, mode }: AmbientParticlesProps) {
+export function AmbientParticles({ scrollProgressRef, mode }: AmbientParticlesProps) {
   const meshRef = useRef<THREE.InstancedMesh>(null)
   const dummy = useMemo(() => new THREE.Object3D(), [])
+  const tempVec3 = useMemo(() => new THREE.Vector3(), [])
   const velocitiesRef = useRef<THREE.Vector3[]>([])
   const scaleMultipliersRef = useRef<number[]>([])
   const prevModeRef = useRef<SceneMode>(mode)
@@ -67,8 +68,9 @@ export function AmbientParticles({ scrollProgress, mode }: AmbientParticlesProps
 
       if (mode === "transitioning") {
         // Scatter outward during transition with damping
-        const dir = p.position.clone().normalize()
-        velocitiesRef.current[i].add(dir.multiplyScalar(0.02))
+        // Reuse tempVec3 to avoid GC pressure (was: p.position.clone().normalize())
+        tempVec3.copy(p.position).normalize().multiplyScalar(0.02)
+        velocitiesRef.current[i].add(tempVec3)
         // Apply damping to prevent runaway velocities
         velocitiesRef.current[i].multiplyScalar(0.98)
         p.position.add(velocitiesRef.current[i])
@@ -86,7 +88,7 @@ export function AmbientParticles({ scrollProgress, mode }: AmbientParticlesProps
         // Landing mode - lerp back toward base, then apply normal movement
         p.position.lerp(p.basePosition, 0.02)
         const x = p.basePosition.x + Math.sin(t * p.speed + p.offset) * 2
-        const y = p.basePosition.y + Math.cos(t * p.speed * 0.7) * 1.5 - scrollProgress * 15
+        const y = p.basePosition.y + Math.cos(t * p.speed * 0.7) * 1.5 - scrollProgressRef.current * 15
         const z = p.basePosition.z
         // Lerp to target for smooth recovery from scattered positions
         p.position.x = THREE.MathUtils.lerp(p.position.x, x, 0.08)

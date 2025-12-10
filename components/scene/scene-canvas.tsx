@@ -1,5 +1,6 @@
 "use client"
 
+import type { MutableRefObject } from "react"
 import { Environment } from "@react-three/drei"
 import type { SceneMode } from "@/lib/types"
 import { SCENE_COLORS } from "@/lib/constants"
@@ -10,11 +11,11 @@ import { AmbientParticles } from "./ambient-particles"
 import { ScrollCamera } from "./scroll-camera"
 
 interface SceneProps {
-  scrollProgress: number
+  scrollProgressRef: MutableRefObject<number>
   mode: SceneMode
 }
 
-export function Scene({ scrollProgress, mode }: SceneProps) {
+export function Scene({ scrollProgressRef, mode }: SceneProps) {
   return (
     <>
       {/* Lighting */}
@@ -25,43 +26,43 @@ export function Scene({ scrollProgress, mode }: SceneProps) {
 
       <Environment preset="night" />
 
-      <ScrollCamera scrollProgress={scrollProgress} mode={mode} />
+      <ScrollCamera scrollProgressRef={scrollProgressRef} mode={mode} />
 
       {/* THE focal point - always visible, transforms with scroll */}
-      <TruthCore scrollProgress={scrollProgress} mode={mode} />
+      <TruthCore scrollProgressRef={scrollProgressRef} mode={mode} />
 
       {/* Section-specific accents that fade in */}
       <SectionAccent
         position={SECTION_POSITIONS.stats}
-        scrollProgress={scrollProgress}
+        scrollProgressRef={scrollProgressRef}
         showAfter={SECTION_THRESHOLDS.stats}
         type="stats"
         mode={mode}
       />
       <SectionAccent
         position={SECTION_POSITIONS.problem}
-        scrollProgress={scrollProgress}
+        scrollProgressRef={scrollProgressRef}
         showAfter={SECTION_THRESHOLDS.problem}
         type="problem"
         mode={mode}
       />
       <SectionAccent
         position={SECTION_POSITIONS.how}
-        scrollProgress={scrollProgress}
+        scrollProgressRef={scrollProgressRef}
         showAfter={SECTION_THRESHOLDS.how}
         type="how"
         mode={mode}
       />
       <SectionAccent
         position={SECTION_POSITIONS.cta}
-        scrollProgress={scrollProgress}
+        scrollProgressRef={scrollProgressRef}
         showAfter={SECTION_THRESHOLDS.cta}
         type="cta"
         mode={mode}
       />
 
       {/* Subtle ambient particles */}
-      <AmbientParticles scrollProgress={scrollProgress} mode={mode} />
+      <AmbientParticles scrollProgressRef={scrollProgressRef} mode={mode} />
     </>
   )
 }

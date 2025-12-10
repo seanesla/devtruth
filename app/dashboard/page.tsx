@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { Link } from "next-view-transitions"
 import { ArrowUpRight } from "lucide-react"
 import { useSceneMode } from "@/lib/scene-context"
@@ -23,9 +23,16 @@ export default function DashboardPage() {
     return () => clearTimeout(timer)
   }, [])
 
-  const passing = mockTests.filter((t) => t.status === "pass").length
-  const failing = mockTests.filter((t) => t.status === "fail").length
-  const warnings = mockTests.filter((t) => t.status === "warn").length
+  // Memoize test counts - single pass instead of 3 filter operations
+  const { passing, failing, warnings } = useMemo(() => {
+    let pass = 0, fail = 0, warn = 0
+    for (const t of mockTests) {
+      if (t.status === "pass") pass++
+      else if (t.status === "fail") fail++
+      else if (t.status === "warn") warn++
+    }
+    return { passing: pass, failing: fail, warnings: warn }
+  }, [])
 
   return (
     <div className="min-h-screen bg-transparent">
