@@ -35,5 +35,5 @@ export const SECTION_THRESHOLDS = {
 // Particle counts
 export const PARTICLES = {
   landing: 40,
-  dashboard: 15,
+  dashboard: 25,
 }
