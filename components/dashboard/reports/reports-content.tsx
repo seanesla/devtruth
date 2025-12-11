@@ -30,7 +30,7 @@ export function ReportsContent() {
       {/* Empty State (shown when no reports) */}
       {mockReports.length === 0 && (
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="rounded-lg border border-border/50 bg-background/40 backdrop-blur-xl p-8 max-w-md">
+          <div className="rounded-lg border border-border/70 bg-background/40 backdrop-blur-xl p-8 max-w-md">
             <h3 className="text-lg font-semibold mb-2">No reports yet</h3>
             <p className="text-sm text-muted-foreground mb-4">
               Generate your first report to analyze test results and track compliance over time.

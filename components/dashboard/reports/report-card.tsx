@@ -32,7 +32,7 @@ export const ReportCard = memo(function ReportCard({ report }: ReportCardProps) 
   const passRate = ((report.stats.passing / report.stats.totalTests) * 100).toFixed(0)
 
   return (
-    <div className="rounded-lg border border-border/50 bg-background/40 backdrop-blur-xl p-6 hover:bg-foreground/5 transition-colors">
+    <div className="rounded-lg border border-border/70 bg-background/40 backdrop-blur-xl p-6 hover:bg-foreground/5 transition-colors">
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-start justify-between">
@@ -86,7 +86,7 @@ export const ReportCard = memo(function ReportCard({ report }: ReportCardProps) 
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 pt-2 border-t border-border/50">
+        <div className="flex items-center gap-2 pt-2 border-t border-border/70">
           <Button variant="outline" size="sm" className="flex-1">
             View Details
           </Button>

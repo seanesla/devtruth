@@ -40,7 +40,7 @@ export function TestFilters({
   onRunSelected,
 }: TestFiltersProps) {
   return (
-    <div className="rounded-lg border border-border/50 bg-background/40 backdrop-blur-xl p-6">
+    <div className="rounded-lg border border-border/70 bg-background/40 backdrop-blur-xl p-6">
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Search */}
         <div className="relative flex-1">

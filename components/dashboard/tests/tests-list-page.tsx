@@ -157,12 +157,12 @@ export function TestsListPage() {
         {/* Tests List */}
         <div
           className={cn(
-            "relative rounded-lg border border-border/50 bg-background/40 backdrop-blur-xl overflow-hidden transition-all duration-1000 delay-300",
+            "relative rounded-lg border border-border/70 bg-background/40 backdrop-blur-xl overflow-hidden transition-all duration-1000 delay-300",
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           )}
         >
           {/* Table header */}
-          <div className="grid grid-cols-12 gap-4 px-6 md:px-8 py-4 text-xs uppercase tracking-wider text-muted-foreground border-b border-border/50 bg-background/30">
+          <div className="grid grid-cols-12 gap-4 px-6 md:px-8 py-4 text-xs uppercase tracking-wider text-muted-foreground border-b border-border/70 bg-background/30">
             <div className="col-span-1 flex items-center">
               <Checkbox
                 checked={allSelected}
