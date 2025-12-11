@@ -28,7 +28,7 @@ export function TruthCore({ scrollProgressRef, mode }: TruthCoreProps) {
 
     // Fade out during transition and dashboard
     const targetOpacity = mode === "landing" ? 1 : 0
-    opacityRef.current = THREE.MathUtils.lerp(opacityRef.current, targetOpacity, 0.05)
+    opacityRef.current = THREE.MathUtils.lerp(opacityRef.current, targetOpacity, 0.0417)
 
     // Only hide when fading OUT and nearly invisible (not when fading IN)
     const isFadingOut = targetOpacity === 0
@@ -79,17 +79,17 @@ export function TruthCore({ scrollProgressRef, mode }: TruthCoreProps) {
       // Dive forward during transition
       targetY = -5
       targetZ = -15
-      lerpSpeed = 0.08
+      lerpSpeed = 0.0667
     } else if (mode === "dashboard") {
       // Hidden position for dashboard
       targetY = -10
       targetZ = -20
-      lerpSpeed = 0.02
+      lerpSpeed = 0.0167
     } else {
       // Landing mode - scroll-based position
       targetY = 1 - scrollProgress * 6
       targetZ = -2 - scrollProgress * 8
-      lerpSpeed = 0.08
+      lerpSpeed = 0.0667
     }
 
     // Always lerp to target position to prevent jumps
