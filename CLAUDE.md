@@ -91,3 +91,4 @@ import { useSceneMode } from "@/lib/scene-context"
 import { mockTests, getTestById } from "@/lib/data/mock-tests"
 import type { TestSummary, TestStatus } from "@/lib/types"
 ```
+- keep claude.md up-to-date
