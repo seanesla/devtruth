@@ -9,12 +9,12 @@ export function DecorativeGrid({
   opacity = "standard",
   className,
 }: DecorativeGridProps) {
-  const gridOpacity = opacity === "light" ? "#ffffff04" : "#ffffff08"
+  const gridOpacity = opacity === "light" ? "#ffffff05" : "#ffffff0a"
 
   return (
     <div
       className={cn(
-        "pointer-events-none absolute -top-24 -bottom-24 left-0 right-0 mask-fade-vertical",
+        "pointer-events-none absolute -top-14 -bottom-14 left-0 right-0 mask-fade-vertical",
         className
       )}
       style={{
