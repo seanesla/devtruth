@@ -63,7 +63,7 @@ export function AmbientParticles({ scrollProgressRef, mode }: AmbientParticlesPr
       scaleMultipliersRef.current[i] = THREE.MathUtils.lerp(
         scaleMultipliersRef.current[i],
         targetScale,
-        0.05
+        0.0417
       )
 
       if (mode === "transitioning") {
@@ -76,24 +76,24 @@ export function AmbientParticles({ scrollProgressRef, mode }: AmbientParticlesPr
         p.position.add(velocitiesRef.current[i])
       } else if (mode === "dashboard") {
         // Lerp back toward base position first, then apply calm drift
-        p.position.lerp(p.basePosition, 0.03)
+        p.position.lerp(p.basePosition, 0.025)
         const x = p.basePosition.x + Math.sin(t * p.speed * 0.3 + p.offset) * 1
         const y = p.basePosition.y + Math.cos(t * p.speed * 0.2) * 0.5
         const z = p.basePosition.z
         // Lerp to target position for smooth transition
-        p.position.x = THREE.MathUtils.lerp(p.position.x, x, 0.05)
-        p.position.y = THREE.MathUtils.lerp(p.position.y, y, 0.05)
-        p.position.z = THREE.MathUtils.lerp(p.position.z, z, 0.05)
+        p.position.x = THREE.MathUtils.lerp(p.position.x, x, 0.0417)
+        p.position.y = THREE.MathUtils.lerp(p.position.y, y, 0.0417)
+        p.position.z = THREE.MathUtils.lerp(p.position.z, z, 0.0417)
       } else {
         // Landing mode - lerp back toward base, then apply normal movement
-        p.position.lerp(p.basePosition, 0.02)
+        p.position.lerp(p.basePosition, 0.0167)
         const x = p.basePosition.x + Math.sin(t * p.speed + p.offset) * 2
         const y = p.basePosition.y + Math.cos(t * p.speed * 0.7) * 1.5 - scrollProgressRef.current * 15
         const z = p.basePosition.z
         // Lerp to target for smooth recovery from scattered positions
-        p.position.x = THREE.MathUtils.lerp(p.position.x, x, 0.08)
-        p.position.y = THREE.MathUtils.lerp(p.position.y, y, 0.08)
-        p.position.z = THREE.MathUtils.lerp(p.position.z, z, 0.08)
+        p.position.x = THREE.MathUtils.lerp(p.position.x, x, 0.0667)
+        p.position.y = THREE.MathUtils.lerp(p.position.y, y, 0.0667)
+        p.position.z = THREE.MathUtils.lerp(p.position.z, z, 0.0667)
       }
 
       dummy.position.copy(p.position)
