@@ -201,9 +201,6 @@ export default function DashboardPage() {
           ref={chartsRef}
           className="relative mb-20 md:mb-24"
         >
-          {/* Grid background */}
-          <DecorativeGrid opacity="light" />
-
           {/* Decorative blur accents */}
           <div className="pointer-events-none absolute top-0 right-0 h-96 w-96 rounded-full bg-success/5 blur-3xl" />
           <div className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 h-80 w-80 rounded-full bg-accent/5 blur-3xl" />
