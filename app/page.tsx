@@ -1,13 +1,13 @@
 "use client"
 
-import type React from "react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useSceneMode } from "@/lib/scene-context"
 import { useLenis } from "@/hooks/use-lenis"
 import { useSectionObserver } from "@/hooks/use-section-observer"
 import { EnterButton } from "@/components/enter-button"
 import { FeaturesSection } from "@/components/features-section"
 import { Footer } from "@/components/footer"
+import { ScrollReveal } from "@/components/scroll-reveal"
 
 export default function LandingPage() {
   const [heroVisible, setHeroVisible] = useState(false)
@@ -214,35 +214,6 @@ export default function LandingPage() {
           <p className="text-xs text-muted-foreground">Built for Tableau Hackathon 2025</p>
         </div>
       </div>
-    </div>
-  )
-}
-
-function ScrollReveal({ children }: { children: React.ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
-    )
-
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
-
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-    >
-      {children}
     </div>
   )
 }
