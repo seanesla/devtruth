@@ -45,7 +45,7 @@ export const AlertCard = memo(function AlertCard({ alert, onAcknowledge }: Alert
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-lg border border-border/50 bg-background/40 backdrop-blur-xl transition-colors ${
+      className={`group relative overflow-hidden rounded-lg border border-border/70 bg-background/40 backdrop-blur-xl transition-colors ${
         alert.acknowledged
           ? "opacity-60 hover:opacity-80"
           : "hover:bg-foreground/5"

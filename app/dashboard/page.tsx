@@ -178,19 +178,19 @@ export default function DashboardPage() {
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}
         >
-          <div className="text-center p-4 md:p-5 rounded-lg border border-border/50 bg-card/20 backdrop-blur-xl">
+          <div className="text-center p-4 md:p-5 rounded-lg border border-border/70 bg-card/20 backdrop-blur-xl">
             <p className="text-3xl md:text-4xl font-serif tabular-nums">{mockTests.length}</p>
             <p className="text-xs text-muted-foreground mt-2">Total tests</p>
           </div>
-          <div className="text-center p-4 md:p-5 rounded-lg border border-border/50 bg-card/20 backdrop-blur-xl">
+          <div className="text-center p-4 md:p-5 rounded-lg border border-border/70 bg-card/20 backdrop-blur-xl">
             <p className="text-3xl md:text-4xl font-serif tabular-nums text-success">{passing}</p>
             <p className="text-xs text-muted-foreground mt-2">Passing</p>
           </div>
-          <div className="text-center p-4 md:p-5 rounded-lg border border-border/50 bg-card/20 backdrop-blur-xl">
+          <div className="text-center p-4 md:p-5 rounded-lg border border-border/70 bg-card/20 backdrop-blur-xl">
             <p className="text-3xl md:text-4xl font-serif tabular-nums text-destructive">{failing}</p>
             <p className="text-xs text-muted-foreground mt-2">Failing</p>
           </div>
-          <div className="text-center p-4 md:p-5 rounded-lg border border-border/50 bg-card/20 backdrop-blur-xl">
+          <div className="text-center p-4 md:p-5 rounded-lg border border-border/70 bg-card/20 backdrop-blur-xl">
             <p className="text-3xl md:text-4xl font-serif tabular-nums text-accent">{warnings}</p>
             <p className="text-xs text-muted-foreground mt-2">Warnings</p>
           </div>
@@ -222,7 +222,7 @@ export default function DashboardPage() {
               {/* Chart 1: Test Status Distribution */}
               <div
                 className={cn(
-                  "group relative rounded-lg border border-border/50 bg-card/30 backdrop-blur-xl p-8 transition-all duration-500 hover:border-accent/50 hover:bg-card/40",
+                  "group relative rounded-lg border border-border/70 bg-card/30 backdrop-blur-xl p-8 transition-all duration-500 hover:border-accent/50 hover:bg-card/40",
                   chartsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
                 )}
                 style={{ transitionDelay: chartsVisible ? "400ms" : "0ms" }}
@@ -258,7 +258,7 @@ export default function DashboardPage() {
               {/* Chart 2: 7-Day Trend */}
               <div
                 className={cn(
-                  "group relative rounded-lg border border-border/50 bg-card/30 backdrop-blur-xl p-8 transition-all duration-500 hover:border-accent/50 hover:bg-card/40",
+                  "group relative rounded-lg border border-border/70 bg-card/30 backdrop-blur-xl p-8 transition-all duration-500 hover:border-accent/50 hover:bg-card/40",
                   chartsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
                 )}
                 style={{ transitionDelay: chartsVisible ? "500ms" : "0ms" }}
@@ -290,7 +290,7 @@ export default function DashboardPage() {
               {/* Chart 3: Health Score Gauge */}
               <div
                 className={cn(
-                  "group relative rounded-lg border border-border/50 bg-card/30 backdrop-blur-xl p-8 transition-all duration-500 hover:border-accent/50 hover:bg-card/40",
+                  "group relative rounded-lg border border-border/70 bg-card/30 backdrop-blur-xl p-8 transition-all duration-500 hover:border-accent/50 hover:bg-card/40",
                   chartsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
                 )}
                 style={{ transitionDelay: chartsVisible ? "600ms" : "0ms" }}
@@ -332,7 +332,7 @@ export default function DashboardPage() {
               {/* Chart 4: Recent Test Results */}
               <div
                 className={cn(
-                  "group relative rounded-lg border border-border/50 bg-card/30 backdrop-blur-xl p-8 transition-all duration-500 hover:border-accent/50 hover:bg-card/40",
+                  "group relative rounded-lg border border-border/70 bg-card/30 backdrop-blur-xl p-8 transition-all duration-500 hover:border-accent/50 hover:bg-card/40",
                   chartsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
                 )}
                 style={{ transitionDelay: chartsVisible ? "700ms" : "0ms" }}
@@ -374,7 +374,7 @@ export default function DashboardPage() {
 
           <div
             className={cn(
-              "relative rounded-lg border border-border/50 bg-card/20 backdrop-blur-xl overflow-hidden transition-all duration-1000 delay-300",
+              "relative rounded-lg border border-border/70 bg-card/20 backdrop-blur-xl overflow-hidden transition-all duration-1000 delay-300",
               visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
             )}
           >

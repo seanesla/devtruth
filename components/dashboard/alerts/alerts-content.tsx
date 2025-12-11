@@ -50,7 +50,7 @@ export function AlertsContent() {
   return (
     <div className="flex flex-1 flex-col">
       {/* Filter Bar */}
-      <div className="rounded-t-lg border border-border/50 bg-background/40 px-6 py-4 backdrop-blur-xl">
+      <div className="rounded-t-lg border border-border/70 bg-background/40 px-6 py-4 backdrop-blur-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {unreadCount > 0 && (
@@ -116,9 +116,9 @@ export function AlertsContent() {
       </div>
 
       {/* Alert Feed */}
-      <div className="flex-1 rounded-b-lg border border-t-0 border-border/50 bg-background/40 p-6 backdrop-blur-xl">
+      <div className="flex-1 rounded-b-lg border border-t-0 border-border/70 bg-background/40 p-6 backdrop-blur-xl">
         {filteredAlerts.length === 0 ? (
-          <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed border-border/50 bg-background/40 p-12 text-center backdrop-blur-xl">
+          <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed border-border/70 bg-background/40 p-12 text-center backdrop-blur-xl">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
               <CheckCheck className="h-6 w-6 text-muted-foreground" />
             </div>
