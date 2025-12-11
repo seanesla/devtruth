@@ -12,14 +12,8 @@ export function ReportsContent() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-serif font-semibold">Reports</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Generate and export compliance reports for your test suite
-          </p>
-        </div>
+      {/* Action Bar */}
+      <div className="flex items-center justify-end">
         <Button onClick={() => setIsModalOpen(true)} className="gap-2">
           <Plus className="size-4" />
           Generate Report
