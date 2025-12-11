@@ -49,32 +49,28 @@ export function AlertsContent() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* Header */}
-      <div className="flex h-16 items-center justify-between border-b border-border/50 bg-background/40 px-6 backdrop-blur-xl lg:px-8">
-        <div className="flex items-center gap-3">
-          <h1 className="text-xl font-semibold">Alerts</h1>
-          {unreadCount > 0 && (
-            <Badge variant="destructive" className="rounded-full">
-              {unreadCount}
-            </Badge>
-          )}
-        </div>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleMarkAllRead}
-          disabled={unreadCount === 0}
-          className="gap-2"
-        >
-          <CheckCheck className="h-4 w-4" />
-          Mark All Read
-        </Button>
-      </div>
-
       {/* Filter Bar */}
-      <div className="border-b border-border/50 bg-background/40 px-6 py-4 backdrop-blur-xl lg:px-8">
-        <div className="flex flex-wrap gap-2">
+      <div className="rounded-t-lg border border-border/50 bg-background/40 px-6 py-4 backdrop-blur-xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {unreadCount > 0 && (
+              <Badge variant="destructive" className="rounded-full">
+                {unreadCount} unread
+              </Badge>
+            )}
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleMarkAllRead}
+            disabled={unreadCount === 0}
+            className="gap-2"
+          >
+            <CheckCheck className="h-4 w-4" />
+            Mark All Read
+          </Button>
+        </div>
+        <div className="flex flex-wrap gap-2 mt-4">
           <Button
             variant={activeFilter === "all" ? "default" : "outline"}
             size="sm"
@@ -120,7 +116,7 @@ export function AlertsContent() {
       </div>
 
       {/* Alert Feed */}
-      <div className="flex-1 overflow-y-auto bg-background/40 p-6 lg:p-8">
+      <div className="flex-1 rounded-b-lg border border-t-0 border-border/50 bg-background/40 p-6 backdrop-blur-xl">
         {filteredAlerts.length === 0 ? (
           <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed border-border/50 bg-background/40 p-12 text-center backdrop-blur-xl">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
