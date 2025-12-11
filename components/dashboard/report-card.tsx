@@ -1,15 +1,16 @@
 "use client"
 
+import { memo } from "react"
+import { Download, FileText } from "lucide-react"
 import type { Report } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { reportTypeLabels, generateReportJSON } from "@/lib/data/mock-reports"
-import { Download, FileText } from "lucide-react"
 
 interface ReportCardProps {
   report: Report
 }
 
-export function ReportCard({ report }: ReportCardProps) {
+export const ReportCard = memo(function ReportCard({ report }: ReportCardProps) {
   const handleExportJSON = () => {
     const json = generateReportJSON(report)
     const blob = new Blob([json], { type: "application/json" })
@@ -101,4 +102,4 @@ export function ReportCard({ report }: ReportCardProps) {
       </div>
     </div>
   )
-}
+})

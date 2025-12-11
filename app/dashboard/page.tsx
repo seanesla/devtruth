@@ -23,7 +23,7 @@ import {
 } from "recharts"
 import { useSceneMode } from "@/lib/scene-context"
 import { cn } from "@/lib/utils"
-import { mockTests } from "@/lib/data/mock-tests"
+import { mockTests, getTestStats } from "@/lib/data/mock-tests"
 import { StatusIndicator, statusConfig } from "@/components/ui/status-indicator"
 import {
   ChartContainer,
@@ -66,18 +66,10 @@ export default function DashboardPage() {
   }, [])
 
   // Memoize test counts
-  const { passing, failing, warnings } = useMemo(() => {
-    let pass = 0, fail = 0, warn = 0
-    for (const t of mockTests) {
-      if (t.status === "pass") pass++
-      else if (t.status === "fail") fail++
-      else if (t.status === "warn") warn++
-    }
-    return { passing: pass, failing: fail, warnings: warn }
-  }, [])
+  const { passing, failing, warnings, total } = useMemo(() => getTestStats(), [])
 
   // Calculate health score
-  const healthScore = Math.round((passing / mockTests.length) * 100)
+  const healthScore = Math.round((passing / total) * 100)
 
   // Chart config for colors
   const chartConfig: ChartConfig = {
@@ -100,11 +92,14 @@ export default function DashboardPage() {
   }
 
   // Status distribution data
-  const statusData = [
-    { name: "passing", value: passing, fill: "#22c55e" }, // success green
-    { name: "failing", value: failing, fill: "#ef4444" }, // destructive red
-    { name: "warnings", value: warnings, fill: "#d4a574" }, // accent amber
-  ]
+  const statusData = useMemo(
+    () => [
+      { name: "passing", value: passing, fill: "#22c55e" }, // success green
+      { name: "failing", value: failing, fill: "#ef4444" }, // destructive red
+      { name: "warnings", value: warnings, fill: "#d4a574" }, // accent amber
+    ],
+    [passing, failing, warnings]
+  )
 
   // Health score color
   const getHealthColor = () => {
@@ -113,28 +108,38 @@ export default function DashboardPage() {
     return "#ef4444" // destructive red
   }
 
-  const healthData = [
-    { name: "health", value: healthScore, fill: getHealthColor() }
-  ]
+  const healthData = useMemo(
+    () => [
+      { name: "health", value: healthScore, fill: getHealthColor() },
+    ],
+    [healthScore]
+  )
 
   // 7-day trend data
-  const trendData = [
-    { day: "Mon", passRate: 88 },
-    { day: "Tue", passRate: 92 },
-    { day: "Wed", passRate: 85 },
-    { day: "Thu", passRate: 90 },
-    { day: "Fri", passRate: 87 },
-    { day: "Sat", passRate: 91 },
-    { day: "Sun", passRate: healthScore },
-  ]
+  const trendData = useMemo(
+    () => [
+      { day: "Mon", passRate: 88 },
+      { day: "Tue", passRate: 92 },
+      { day: "Wed", passRate: 85 },
+      { day: "Thu", passRate: 90 },
+      { day: "Fri", passRate: 87 },
+      { day: "Sat", passRate: 91 },
+      { day: "Sun", passRate: healthScore },
+    ],
+    [healthScore]
+  )
 
   // Recent test results (last 10)
-  const recentResults = mockTests.slice(0, 10).map(test => ({
-    name: test.name.substring(0, 12) + (test.name.length > 12 ? "..." : ""),
-    variance: parseFloat(test.variance),
-    status: test.status,
-    fullName: test.name,
-  }))
+  const recentResults = useMemo(
+    () =>
+      mockTests.slice(0, 10).map((test) => ({
+        name: `${test.name.substring(0, 12)}${test.name.length > 12 ? "..." : ""}`,
+        variance: parseFloat(test.variance),
+        status: test.status,
+        fullName: test.name,
+      })),
+    []
+  )
 
   return (
     <div className="min-h-screen bg-transparent relative overflow-hidden">

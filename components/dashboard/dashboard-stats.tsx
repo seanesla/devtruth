@@ -1,7 +1,8 @@
+import { memo } from "react"
 import { CheckCircle2, XCircle, Clock, AlertTriangle } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-export function DashboardStats() {
+export const DashboardStats = memo(function DashboardStats() {
   const stats = [
     { label: "Total Tests", value: "247", icon: Clock, color: "text-foreground" },
     { label: "Passing", value: "231", icon: CheckCircle2, color: "text-success" },
@@ -22,4 +23,4 @@ export function DashboardStats() {
       ))}
     </div>
   )
-}
+})

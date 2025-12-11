@@ -1,10 +1,11 @@
+import { memo } from "react"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 import { mockTests } from "@/lib/data/mock-tests"
 import { StatusIndicator, statusConfig } from "@/components/ui/status-indicator"
 import type { TestStatus } from "@/lib/types"
 
-export function TestsList() {
+export const TestsList = memo(function TestsList() {
   return (
     <div className="rounded-lg border border-border bg-card">
       <div className="flex items-center justify-between border-b border-border px-6 py-4">
@@ -47,4 +48,4 @@ export function TestsList() {
       </div>
     </div>
   )
-}
+})
