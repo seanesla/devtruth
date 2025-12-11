@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { ReportCard } from "@/components/dashboard/report-card"
-import { GenerateReportModal } from "@/components/dashboard/generate-report-modal"
-import { mockReports } from "@/lib/data/mock-reports"
 import { Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ReportCard } from "@/components/dashboard/reports/report-card"
+import { GenerateReportModal } from "@/components/dashboard/reports/generate-report-modal"
+import { mockReports } from "@/lib/data/mock-reports"
 
 export function ReportsContent() {
   const [isModalOpen, setIsModalOpen] = useState(false)
