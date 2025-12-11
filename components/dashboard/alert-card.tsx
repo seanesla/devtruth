@@ -1,8 +1,9 @@
+import { memo } from "react"
 import Link from "next/link"
+import { AlertCircle, AlertTriangle, Info, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { Alert } from "@/lib/types"
-import { AlertCircle, AlertTriangle, Info, Check } from "lucide-react"
 
 interface AlertCardProps {
   alert: Alert
@@ -38,7 +39,7 @@ const typeLabels = {
   threshold: "Threshold Warning",
 }
 
-export function AlertCard({ alert, onAcknowledge }: AlertCardProps) {
+export const AlertCard = memo(function AlertCard({ alert, onAcknowledge }: AlertCardProps) {
   const config = severityConfig[alert.severity]
   const Icon = config.icon
 
@@ -114,4 +115,4 @@ export function AlertCard({ alert, onAcknowledge }: AlertCardProps) {
       </div>
     </div>
   )
-}
+})

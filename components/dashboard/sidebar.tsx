@@ -2,25 +2,25 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { LayoutDashboard, FlaskConical, Settings, FileText, Bell, ChevronLeft } from "lucide-react"
 import { useState, memo } from "react"
+import { LayoutDashboard, FlaskConical, Settings, FileText, Bell, ChevronLeft } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export interface SidebarProps {
   defaultCollapsed?: boolean
 }
 
+const navItems = [
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/tests", label: "Tests", icon: FlaskConical },
+  { href: "/dashboard/alerts", label: "Alerts", icon: Bell },
+  { href: "/dashboard/reports", label: "Reports", icon: FileText },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+] as const
+
 export const Sidebar = memo(function Sidebar({ defaultCollapsed = false }: SidebarProps) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
-
-  const navItems = [
-    { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-    { href: "/dashboard/tests", label: "Tests", icon: FlaskConical },
-    { href: "/dashboard/alerts", label: "Alerts", icon: Bell },
-    { href: "/dashboard/reports", label: "Reports", icon: FileText },
-    { href: "/dashboard/settings", label: "Settings", icon: Settings },
-  ]
 
   return (
     <aside

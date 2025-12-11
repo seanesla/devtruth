@@ -1,12 +1,16 @@
-import { Button } from "@/components/ui/button"
+import { memo } from "react"
 import { Plus, Search } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export interface DashboardHeaderProps {
   title?: string
   onNewTest?: () => void
 }
 
-export function DashboardHeader({ title = "Dashboard", onNewTest }: DashboardHeaderProps) {
+export const DashboardHeader = memo(function DashboardHeader({
+  title = "Dashboard",
+  onNewTest,
+}: DashboardHeaderProps) {
   return (
     <header className="flex h-16 items-center justify-between border-b border-border bg-card/50 px-6 lg:px-8">
       <div className="flex items-center gap-4">
@@ -29,4 +33,4 @@ export function DashboardHeader({ title = "Dashboard", onNewTest }: DashboardHea
       </div>
     </header>
   )
-}
+})
