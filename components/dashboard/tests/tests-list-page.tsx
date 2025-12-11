@@ -11,6 +11,7 @@ import { StatusIndicator, statusConfig } from "@/components/ui/status-indicator"
 import { TestFilters } from "@/components/dashboard/tests/test-filters"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { DecorativeGrid } from "@/components/ui/decorative-grid"
 
 export function TestsListPage() {
   const { setMode } = useSceneMode()
@@ -95,7 +96,7 @@ export function TestsListPage() {
         {/* Header Section */}
         <div className="relative mb-16">
           {/* Grid background */}
-          <div className="pointer-events-none absolute -inset-12 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:64px_64px]" />
+          <DecorativeGrid />
 
           {/* Decorative blur accents */}
           <div className="pointer-events-none absolute -top-32 -right-32 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />

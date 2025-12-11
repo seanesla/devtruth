@@ -25,6 +25,7 @@ import { useSceneMode } from "@/lib/scene-context"
 import { cn } from "@/lib/utils"
 import { mockTests, getTestStats } from "@/lib/data/mock-tests"
 import { StatusIndicator, statusConfig } from "@/components/ui/status-indicator"
+import { DecorativeGrid } from "@/components/ui/decorative-grid"
 import {
   ChartContainer,
   ChartTooltip,
@@ -147,7 +148,7 @@ export default function DashboardPage() {
         {/* HERO SECTION - Keep current design */}
         <div className="relative mb-24 md:mb-28">
           {/* Grid background */}
-          <div className="pointer-events-none absolute -inset-12 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:64px_64px]" />
+          <DecorativeGrid />
 
           {/* Decorative blur accents */}
           <div className="pointer-events-none absolute -top-32 -right-32 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
@@ -201,7 +202,7 @@ export default function DashboardPage() {
           className="relative mb-20 md:mb-24"
         >
           {/* Grid background */}
-          <div className="pointer-events-none absolute -inset-8 bg-[linear-gradient(to_right,#ffffff04_1px,transparent_1px),linear-gradient(to_bottom,#ffffff04_1px,transparent_1px)] bg-[size:64px_64px]" />
+          <DecorativeGrid opacity="light" />
 
           {/* Decorative blur accents */}
           <div className="pointer-events-none absolute top-0 right-0 h-96 w-96 rounded-full bg-success/5 blur-3xl" />

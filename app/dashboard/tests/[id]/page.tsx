@@ -7,6 +7,7 @@ import { useSceneMode } from "@/lib/scene-context"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { TestDetailContent } from "@/components/dashboard/tests/test-detail-content"
+import { DecorativeGrid } from "@/components/ui/decorative-grid"
 import { getTestDetailById } from "@/lib/data/mock-tests"
 
 export default function TestDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -30,7 +31,7 @@ export default function TestDetailPage({ params }: { params: Promise<{ id: strin
       <main className="px-8 md:px-16 lg:px-20 pt-28 pb-12 relative z-10">
         {/* Header Section */}
         <div className="relative mb-12">
-          <div className="pointer-events-none absolute -inset-12 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:64px_64px]" />
+          <DecorativeGrid />
           <div className="pointer-events-none absolute -top-32 -right-32 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
 
           <div
