@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { mockTests } from "@/lib/data/mock-tests"
 import type { TestSummary, TestStatus } from "@/lib/types"
 import { StatusIndicator, statusConfig } from "@/components/ui/status-indicator"
-import { TestFilters } from "@/components/dashboard/test-filters"
+import { TestFilters } from "@/components/dashboard/tests/test-filters"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 

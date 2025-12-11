@@ -1,4 +1,4 @@
-import { Sidebar } from "@/components/dashboard/sidebar"
+import { Sidebar } from "@/components/dashboard/layout/sidebar"
 import { SettingsContent } from "@/components/dashboard/settings-content"
 
 export default function SettingsPage() {

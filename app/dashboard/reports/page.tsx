@@ -1,5 +1,5 @@
-import { Sidebar } from "@/components/dashboard/sidebar"
-import { ReportsContent } from "@/components/dashboard/reports-content"
+import { Sidebar } from "@/components/dashboard/layout/sidebar"
+import { ReportsContent } from "@/components/dashboard/reports/reports-content"
 
 export default function ReportsPage() {
   return (
