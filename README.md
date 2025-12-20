@@ -58,75 +58,70 @@ Users record 30-60 seconds describing their day. The app analyzes vocal biomarke
 
 ## Gemini 3 Integration
 
-Gemini 3 is central to kanari's intervention engine. While vocal biomarker extraction and trend analysis happen locally in the browser, Gemini 3 transforms raw wellness scores into actionable, personalized recommendations.
+kanari uses a **hybrid analysis approach** that combines local acoustic processing with Gemini 3 Flash's multimodal capabilities. This architecture leverages each tool's strengths:
+
+| Task | Tool | Why |
+|------|------|-----|
+| MFCCs, spectral features, RMS | **Meyda (local)** | Designed for DSP, precise numerical values |
+| Speech rate, pause patterns | **Local heuristics** | Fast, accurate, no API latency |
+| Emotion detection | **Gemini 3 Flash** | Native multimodal audio understanding |
+| Semantic stress/fatigue cues | **Gemini 3 Flash** | Language + tone understanding |
+| Personalized suggestions | **Gemini 3 Flash** | Context-aware generation |
 
 ### How Gemini 3 is Used
 
-**1. Personalized Suggestion Generation**
+**1. Audio Semantic Analysis**
 
-When vocal biomarkers indicate elevated stress or a concerning trend, the app sends a structured summary (numerical scores only, never audio or transcripts) to Gemini 3. The model generates context-aware recovery suggestions based on:
+Gemini 3 Flash analyzes voice recordings for emotional content and semantic stress/fatigue cues:
 
-- Current stress/fatigue score
+- **Transcription with timestamps** - Speech segments broken into logical chunks
+- **Emotion detection** - Per-segment emotion classification (happy, sad, angry, neutral)
+- **Semantic observations** - Qualitative cues like rushed delivery, hesitations, monotone voice
+- **Stress/fatigue interpretation** - Natural language explanation of indicators
+
+This complements local acoustic analysis which extracts precise numerical features but cannot understand semantic content.
+
+**2. Personalized Suggestion Generation**
+
+When vocal biomarkers indicate elevated stress, Gemini 3 generates context-aware recovery suggestions based on:
+
+- Current stress/fatigue score (from hybrid analysis)
 - Trend direction and duration
 - Time of day and day of week
 - Upcoming calendar density (if calendar is connected)
-- User-specified preferences (work style, break preferences)
-
-**2. Pattern Interpretation**
-
-Gemini 3 analyzes longitudinal data to identify meaningful patterns that simple threshold-based rules would miss. This includes detecting gradual declines that precede burnout episodes and distinguishing between temporary stress spikes and sustained concerning trends.
 
 **3. Calendar Action Generation**
 
 When the user opts to schedule recovery time, Gemini 3 generates appropriate calendar event details (title, duration, description) based on the specific intervention recommended.
 
-### Example API Call
+### Hybrid Scoring
+
+Final scores combine acoustic and semantic analysis with weighted blending:
+
+- **70% weight**: Acoustic features (objective, precise measurements)
+- **30% weight**: Semantic adjustments from Gemini (contextual refinement)
+
+This approach ensures reliable baseline scores from local analysis while incorporating Gemini's understanding of semantic content and emotional tone.
+
+### Example: Audio Analysis Request
 
 ```javascript
-const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent', {
+const response = await fetch('/api/gemini/analyze', {
   method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'x-goog-api-key': GEMINI_API_KEY
-  },
+  headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    contents: [{
-      parts: [{
-        text: `Based on the following wellness data for a remote worker:
-- Current stress score: ${stressScore}/100
-- Fatigue score: ${fatigueScore}/100
-- Trend: ${trendDirection} over past ${trendDays} days
-- Time: ${currentTime}
-- Day: ${dayOfWeek}
-- Upcoming meetings in next 4 hours: ${meetingCount}
-
-Generate 3 specific, actionable recovery suggestions that:
-1. Can be completed in 15 minutes or less
-2. Are appropriate for a home office environment
-3. Address the specific pattern observed
-
-Format as JSON array with fields: suggestion, duration_minutes, rationale`
-      }]
-    }],
-    generationConfig: {
-      temperature: 0.7,
-      maxOutputTokens: 500
-    }
+    audioData: audioBase64,  // Base64-encoded audio
+    mimeType: 'audio/webm'
   })
 });
+
+// Response includes:
+// - segments: Transcript with timestamps and per-segment emotion
+// - observations: Semantic stress/fatigue cues with relevance levels
+// - stressInterpretation: Qualitative stress assessment
+// - fatigueInterpretation: Qualitative fatigue assessment
+// - summary: Overall emotional state assessment
 ```
-
-### Privacy Boundary
-
-Gemini 3 receives only:
-- Aggregate numerical scores (stress, fatigue, trend values)
-- Contextual metadata (time, day, calendar density)
-- User preferences (if configured)
-
-Gemini 3 never receives:
-- Raw audio recordings
-- Transcribed speech content
-- Personal identifiers
 
 ---
 
@@ -156,20 +151,25 @@ Based on competitive analysis of the voice biomarker and mental wellness market:
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                                                                             │
-│   1. RECORD          2. ANALYZE           3. PREDICT         4. ACT        │
+│   1. RECORD          2. ANALYZE              3. COMBINE       4. ACT       │
 │                                                                             │
-│   ┌─────────┐       ┌─────────────┐      ┌──────────┐      ┌─────────┐     │
-│   │  30-60  │       │   Extract   │      │  Compare │      │ Gemini 3│     │
-│   │ seconds │──────▶│   Features  │─────▶│  Against │─────▶│ Suggests│     │
-│   │  voice  │       │  (browser)  │      │  History │      │ Actions │     │
-│   └─────────┘       └─────────────┘      └──────────┘      └─────────┘     │
-│                            │                   │                 │         │
-│                            ▼                   ▼                 ▼         │
-│                     ┌─────────────┐      ┌──────────┐      ┌─────────┐     │
-│                     │ Web Audio   │      │ IndexedDB│      │ Google  │     │
-│                     │ + Meyda     │      │ (local)  │      │ Calendar│     │
-│                     │ + TF.js     │      │          │      │   API   │     │
-│                     └─────────────┘      └──────────┘      └─────────┘     │
+│   ┌─────────┐       ┌─────────────┐         ┌──────────┐    ┌─────────┐   │
+│   │  30-60  │       │ LOCAL       │         │  Hybrid  │    │ Gemini 3│   │
+│   │ seconds │──┬───▶│ Meyda +     │────────▶│  70/30   │───▶│ Suggests│   │
+│   │  voice  │  │    │ Heuristics  │         │  Blend   │    │ Actions │   │
+│   └─────────┘  │    └─────────────┘         └──────────┘    └─────────┘   │
+│                │           │                      │               │        │
+│                │           ▼                      ▼               ▼        │
+│                │    ┌─────────────┐         ┌──────────┐    ┌─────────┐   │
+│                │    │ Acoustic    │         │ IndexedDB│    │ Google  │   │
+│                │    │ Breakdown   │         │ (local)  │    │ Calendar│   │
+│                │    └─────────────┘         └──────────┘    └─────────┘   │
+│                │                                                           │
+│                │    ┌─────────────┐                                       │
+│                └───▶│ GEMINI 3    │                                       │
+│                     │ - Emotion   │─────────────────┘                     │
+│                     │ - Semantic  │                                       │
+│                     └─────────────┘                                       │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -177,20 +177,29 @@ Based on competitive analysis of the voice biomarker and mental wellness market:
 **Step 1: Record**
 User speaks naturally for 30-60 seconds about their day, current state, or anything on their mind. The prompt is intentionally open-ended to capture natural speech patterns.
 
-**Step 2: Analyze**
-The browser extracts vocal biomarkers locally using Web Audio API and Meyda. Features include:
-- Speech rate (syllables per second, computed from energy envelope)
-- Volume (RMS energy and variation)
-- Pause patterns (frequency and duration)
-- Spectral features (MFCCs, spectral centroid, spectral flux, spectral rolloff)
+**Step 2: Analyze (Parallel Processing)**
+Two analyses run in parallel:
 
-Voice activity detection (Silero VAD) ensures only speech segments are analyzed. Pitch/F0 extraction is handled separately via autocorrelation.
+**Local Acoustic Analysis:**
+- Meyda extracts vocal biomarkers (MFCCs, spectral centroid, spectral flux, RMS, ZCR)
+- Heuristics calculate stress/fatigue scores from acoustic features
+- Provides transparent breakdown of which features contributed to scores
 
-**Step 3: Predict**
-Current features are compared against the user's historical baseline stored in IndexedDB. A TensorFlow.js model analyzes the trend to forecast burnout risk for the next 3-7 days.
+**Gemini Semantic Analysis:**
+- Transcribes audio with timestamps
+- Detects emotion per segment (happy, sad, angry, neutral)
+- Identifies semantic stress/fatigue cues (rushed speech, hesitations, monotone)
+- Provides qualitative interpretation of vocal patterns
+
+**Step 3: Combine**
+Hybrid scoring combines both analyses with weighted blending:
+- **70% acoustic** (objective, precise measurements)
+- **30% semantic** (contextual refinement from Gemini)
+
+Scores are compared against historical baseline stored in IndexedDB.
 
 **Step 4: Act**
-Gemini 3 generates personalized intervention suggestions. If the user connects their calendar, the app can automatically schedule recovery blocks.
+Gemini 3 generates personalized intervention suggestions based on hybrid scores. If the user connects their calendar, the app can automatically schedule recovery blocks.
 
 ---
 
@@ -214,13 +223,13 @@ Gemini 3 generates personalized intervention suggestions. If the user connects t
 | Meyda | Audio feature extraction (MFCCs, spectral centroid, RMS, spectral flux) |
 | @ricky0123/vad-web | Voice activity detection using Silero VAD via ONNX |
 
-### Machine Learning
+### Analysis
 
 | Technology | Purpose |
 |------------|---------|
-| TensorFlow.js | On-device inference for stress/fatigue classification |
-| @huggingface/transformers.js | Speech emotion recognition model (DistilHuBERT-based) |
-| ONNX Runtime Web | WebAssembly-based model execution for VAD |
+| Local heuristics | Research-backed stress/fatigue scoring from acoustic features |
+| Gemini 3 Flash | Multimodal audio analysis for emotion detection and semantic cues |
+| ONNX Runtime Web | WebAssembly-based model execution for Silero VAD |
 
 ### Storage and Integration
 
@@ -240,45 +249,50 @@ Gemini 3 generates personalized intervention suggestions. If the user connects t
 
 ## Privacy Architecture
 
-kanari processes voice entirely in the browser. Raw audio never leaves the device.
+kanari uses a hybrid analysis approach with clear privacy boundaries:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         USER'S BROWSER                          │
 │  ┌───────────────────────────────────────────────────────────┐  │
 │  │                                                           │  │
-│  │   Audio ──▶ Features ──▶ Scores ──▶ Encrypted Storage    │  │
-│  │                  │                                        │  │
-│  │   Raw audio deleted immediately after feature extraction  │  │
-│  │                                                           │  │
-│  └───────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              │ Numerical scores only
-                              ▼
-                    ┌─────────────────┐
-                    │   Gemini 3 API  │
-                    │   (generates    │
-                    │   suggestions)  │
-                    └─────────────────┘
+│  │   Audio ──▶ Meyda Features ──▶ Acoustic Scores           │  │
+│  │      │                              │                     │  │
+│  │      │                              ▼                     │  │
+│  │      │                     Encrypted Storage (IndexedDB)  │  │
+│  │      │                                                    │  │
+│  └──────│────────────────────────────────────────────────────┘  │
+└─────────│───────────────────────────────────────────────────────┘
+          │
+          │ Audio (for semantic analysis)
+          ▼
+┌─────────────────┐
+│  Gemini 3 API   │
+│  - Emotion      │ ──▶ Semantic Analysis
+│  - Transcription│     (not stored by API)
+│  - Cues         │
+└─────────────────┘
 ```
 
-**What stays on device:**
-- All raw audio (deleted after feature extraction)
-- All vocal biomarker features
-- All historical trend data (encrypted in IndexedDB)
+**Processed locally (never leaves device):**
+- Raw audio for acoustic feature extraction (MFCCs, spectral features, RMS)
+- Speech rate and pause pattern calculation
+- Acoustic stress/fatigue scores
+- Historical trend data (encrypted in IndexedDB)
 
-**What is sent to Gemini 3:**
-- Aggregate stress/fatigue scores (numbers only)
-- Trend direction and duration
-- Time and day context
-- User preferences (if configured)
+**Sent to Gemini API:**
+- Audio recording (for emotion detection and semantic analysis)
+- Processed per [Gemini API data usage policy](https://ai.google.dev/gemini-api/terms)
+- Not used for model training
+
+**What Gemini receives:**
+- Audio content for semantic analysis
+- Request for emotion/stress analysis
 
 **What is never collected:**
-- Audio recordings
-- Transcribed speech
-- Email addresses or personal identifiers
+- Personal identifiers
 - Location data
+- Account information (no login required)
 
 ---
 
@@ -379,9 +393,10 @@ kanari/
 **Submission Period:** December 17, 2025 - February 9, 2026
 
 **Gemini 3 Features Used:**
-- Text generation for personalized wellness interventions
-- Pattern analysis for burnout trend interpretation
-- Structured output generation for calendar event creation
+- **Multimodal audio analysis** for emotion detection and semantic stress/fatigue cues
+- **Structured JSON output** for transcript segments, observations, and interpretations
+- **Text generation** for personalized wellness interventions
+- **Pattern analysis** for burnout trend interpretation
 
 **Judging Criteria Addressed:**
 
