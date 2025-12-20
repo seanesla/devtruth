@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Link } from "next-view-transitions"
 import { Mic, Clock, TrendingUp, TrendingDown, Minus, Trash2, ChevronDown, ChevronUp } from "lucide-react"
 import { useSceneMode } from "@/lib/scene-context"
@@ -44,6 +44,12 @@ function RecordingCard({ recording, onDelete }: { recording: Recording; onDelete
   const StressIcon = getStressIcon(recording.metrics?.stressLevel)
 
   const hasAudioData = recording.audioData && recording.audioData.length > 0
+
+  // Memoize Float32Array to prevent AudioPlayer re-initialization on every render
+  const audioDataArray = useMemo(() => {
+    if (!hasAudioData) return null
+    return new Float32Array(recording.audioData!)
+  }, [hasAudioData, recording.audioData])
 
   const handleTimeUpdate = useCallback((currentTime: number) => {
     if (recording.duration > 0) {
@@ -130,12 +136,12 @@ function RecordingCard({ recording, onDelete }: { recording: Recording; onDelete
       </div>
 
       {/* Expandable audio player section */}
-      {isExpanded && hasAudioData && (
+      {isExpanded && audioDataArray && (
         <div className="px-6 pb-6 pt-2 border-t border-border/50 space-y-4">
           <div className="flex justify-center">
             <RecordingWaveform
               mode="static"
-              audioData={new Float32Array(recording.audioData!)}
+              audioData={audioDataArray}
               width={400}
               height={60}
               playheadPosition={playheadPosition}
@@ -145,7 +151,7 @@ function RecordingCard({ recording, onDelete }: { recording: Recording; onDelete
           </div>
           <div className="max-w-md mx-auto">
             <AudioPlayer
-              audioData={new Float32Array(recording.audioData!)}
+              audioData={audioDataArray}
               sampleRate={recording.sampleRate || 16000}
               duration={recording.duration}
               onTimeUpdate={handleTimeUpdate}
