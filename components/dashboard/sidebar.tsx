@@ -3,8 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { LayoutDashboard, FlaskConical, Settings, FileText, Bell, ChevronLeft } from "lucide-react"
+import { LayoutDashboard, Mic, History, Lightbulb, Settings, ChevronLeft } from "lucide-react"
 import { useState } from "react"
 
 export interface SidebarProps {
@@ -17,9 +16,9 @@ export function Sidebar({ defaultCollapsed = false }: SidebarProps) {
 
   const navItems = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-    { href: "/dashboard/tests", label: "Tests", icon: FlaskConical },
-    { href: "/dashboard/alerts", label: "Alerts", icon: Bell },
-    { href: "/dashboard/reports", label: "Reports", icon: FileText },
+    { href: "/dashboard/record", label: "Record", icon: Mic },
+    { href: "/dashboard/history", label: "History", icon: History },
+    { href: "/dashboard/suggestions", label: "Suggestions", icon: Lightbulb },
     { href: "/dashboard/settings", label: "Settings", icon: Settings },
   ]
 
@@ -32,8 +31,8 @@ export function Sidebar({ defaultCollapsed = false }: SidebarProps) {
     >
       <div className="flex h-16 items-center justify-between border-b border-border px-4">
         {!collapsed && (
-          <Link href="/" className="text-lg font-semibold">
-            /dev/truth
+          <Link href="/" className="text-lg font-serif text-accent">
+            kanari
           </Link>
         )}
         <button

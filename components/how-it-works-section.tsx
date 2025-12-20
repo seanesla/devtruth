@@ -2,18 +2,18 @@ export function HowItWorksSection() {
   const steps = [
     {
       number: "01",
-      title: "Connect your data",
-      description: "Link your dashboards and raw data sources. We support Looker, Tableau, Metabase, and 340+ more.",
+      title: "Record your voice",
+      description: "Speak naturally for 30-60 seconds about your day. No scripts needed—your voice carries the signal.",
     },
     {
       number: "02",
-      title: "Define truth tests",
-      description: "Set up validation rules for your KPIs. Compare dashboard values against ground truth calculations.",
+      title: "Analyze locally",
+      description: "AI extracts vocal biomarkers entirely in your browser. Speech patterns, pause frequency, spectral features—processed privately.",
     },
     {
       number: "03",
-      title: "Monitor continuously",
-      description: "Get real-time validation results. Know instantly when metrics drift or calculations break.",
+      title: "Predict and act",
+      description: "Compare patterns against your baseline. Get 3-7 day burnout forecasts and personalized recovery suggestions.",
     },
   ]
 
@@ -22,7 +22,7 @@ export function HowItWorksSection() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-16 max-w-2xl">
           <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">How it works</h2>
-          <p className="mt-4 text-lg text-muted-foreground">Get started in minutes, not months.</p>
+          <p className="mt-4 text-lg text-muted-foreground">30 seconds a day. Zero data uploaded.</p>
         </div>
 
         <div className="grid gap-12 md:grid-cols-3">

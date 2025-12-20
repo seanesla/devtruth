@@ -1,9 +1,9 @@
 export function StatsSection() {
   const stats = [
-    { value: "99.7%", label: "Accuracy rate" },
-    { value: "2M+", label: "KPIs validated daily" },
-    { value: "340+", label: "Data sources supported" },
-    { value: "<50ms", label: "Average validation time" },
+    { value: "76%", label: "Workers experience burnout" },
+    { value: "3-7", label: "Days advance warning" },
+    { value: "100%", label: "Client-side processing" },
+    { value: "30s", label: "Daily check-in" },
   ]
 
   return (

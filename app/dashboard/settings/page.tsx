@@ -38,7 +38,7 @@ export default function SettingsPage() {
               Settings
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
-              Configure notifications, test parameters, and connected data sources.
+              Configure recording preferences, notifications, calendar integration, and privacy settings.
             </p>
           </div>
         </div>

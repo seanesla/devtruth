@@ -13,24 +13,24 @@ export function HeroSection() {
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/50 px-4 py-1.5 text-sm">
               <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-              Now validating 2M+ KPIs daily
+              Privacy-first burnout detection
             </div>
 
             <h1 className="text-5xl font-semibold leading-[1.1] tracking-tight md:text-6xl lg:text-7xl text-balance">
-              Trust your
+              Listen to
               <br />
-              <span className="text-accent">metrics.</span>
+              <span className="text-accent">your voice.</span>
             </h1>
 
             <p className="max-w-lg text-lg leading-relaxed text-muted-foreground">
-              /dev/truth validates your business KPIs against ground truth. Catch data drift, calculation errors, and
-              silent failures before they cost you.
+              kanari analyzes your voice to detect early signs of burnout, predict risk days ahead, and schedule
+              recovery time automatically—all processed in your browser.
             </p>
 
             <div className="flex flex-wrap gap-4">
               <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
                 <Link href="/dashboard">
-                  Start Validating
+                  Start Recording
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -56,31 +56,31 @@ function HeroVisual() {
       {/* Main card */}
       <div className="absolute top-0 right-0 w-[380px] rounded-lg border border-border bg-card p-6 shadow-2xl shadow-black/50">
         <div className="flex items-center justify-between mb-6">
-          <span className="text-sm text-muted-foreground">Revenue Validation</span>
+          <span className="text-sm text-muted-foreground">Today's Check-in</span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-success/20 px-2.5 py-0.5 text-xs font-medium text-success">
-            PASS
+            LOW RISK
           </span>
         </div>
 
         <div className="space-y-4">
           <div className="flex items-end justify-between border-b border-border pb-4">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Reported</p>
-              <p className="text-3xl font-semibold tabular-nums">$2.4M</p>
+              <p className="text-xs text-muted-foreground mb-1">Stress Score</p>
+              <p className="text-3xl font-semibold tabular-nums">24</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-muted-foreground mb-1">Calculated</p>
-              <p className="text-3xl font-semibold tabular-nums">$2.4M</p>
+              <p className="text-xs text-muted-foreground mb-1">Fatigue Score</p>
+              <p className="text-3xl font-semibold tabular-nums">31</p>
             </div>
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Variance</span>
-            <span className="font-mono text-success">0.02%</span>
+            <span className="text-muted-foreground">7-day trend</span>
+            <span className="font-mono text-success">Stable</span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Confidence</span>
-            <span className="font-mono">99.8%</span>
+            <span className="text-muted-foreground">Prediction</span>
+            <span className="font-mono">Low risk next 5 days</span>
           </div>
         </div>
       </div>
@@ -88,24 +88,24 @@ function HeroVisual() {
       {/* Secondary card - offset */}
       <div className="absolute bottom-8 left-0 w-[320px] rounded-lg border border-border bg-card p-5 shadow-xl shadow-black/30">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-muted-foreground">Churn Rate</span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-destructive/20 px-2.5 py-0.5 text-xs font-medium text-destructive">
-            FAIL
+          <span className="text-sm text-muted-foreground">Yesterday</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-2.5 py-0.5 text-xs font-medium text-accent">
+            ELEVATED
           </span>
         </div>
 
         <div className="flex items-end gap-4">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Dashboard</p>
-            <p className="text-2xl font-semibold tabular-nums">4.2%</p>
+            <p className="text-xs text-muted-foreground mb-1">Stress</p>
+            <p className="text-2xl font-semibold tabular-nums">58</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Actual</p>
-            <p className="text-2xl font-semibold tabular-nums text-destructive">6.8%</p>
+            <p className="text-xs text-muted-foreground mb-1">Fatigue</p>
+            <p className="text-2xl font-semibold tabular-nums text-accent">67</p>
           </div>
         </div>
 
-        <p className="mt-4 text-xs text-muted-foreground">Source data excludes Q4 cancellations</p>
+        <p className="mt-4 text-xs text-muted-foreground">Recovery break scheduled for 3pm</p>
       </div>
 
       {/* Decorative elements */}

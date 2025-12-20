@@ -45,7 +45,7 @@ export function EnterButton({ className, variant = "hero", children }: EnterButt
           className
         )}
       >
-        {children || "Enter /dev/truth"}
+        {children || "Try kanari"}
         <ArrowUpRight className="h-5 w-5" />
       </button>
     )
@@ -60,7 +60,7 @@ export function EnterButton({ className, variant = "hero", children }: EnterButt
         className
       )}
     >
-      {children || "Start validating"}
+      {children || "Start recording"}
       <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
     </button>
   )

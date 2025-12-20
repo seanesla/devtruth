@@ -8,7 +8,7 @@ import { EnterButton } from "@/components/enter-button"
 import { FeaturesSection } from "@/components/features-section"
 import { Footer } from "@/components/footer"
 import { ScrollReveal } from "@/components/scroll-reveal"
-import { DevTruthTextLogo } from "@/components/devtruth-text-logo"
+import { KanariTextLogo } from "@/components/kanari-text-logo"
 
 export default function LandingPage() {
   const [heroVisible, setHeroVisible] = useState(false)
@@ -45,25 +45,25 @@ export default function LandingPage() {
               heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
-            <DevTruthTextLogo className="h-16 md:h-24 lg:h-28 w-auto" />
+            <KanariTextLogo className="text-6xl md:text-8xl lg:text-9xl" />
           </div>
           <h1
             className={`text-5xl md:text-7xl lg:text-8xl font-serif leading-[0.9] tracking-tight mb-8 transition-all duration-1000 delay-400 ${
               heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
-            Your metrics
+            Your voice
             <br />
-            <span className="text-accent">are lying</span>
+            <span className="text-accent">knows</span>
             <br />
-            to you.
+            before you do.
           </h1>
           <p
             className={`text-muted-foreground text-lg md:text-xl max-w-md leading-relaxed mb-12 transition-all duration-1000 delay-600 ${
               heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
-            /dev/truth validates every KPI against ground truth. Find the drift before it finds you.
+            kanari detects early signs of burnout through your voice, predicts risk days ahead, and schedules recovery time automatically.
           </p>
 
           <div
@@ -91,10 +91,10 @@ export default function LandingPage() {
         <ScrollReveal>
           <div className="grid grid-cols-2 md:grid-cols-4">
             {[
-              { value: "2M+", label: "KPIs validated daily" },
-              { value: "0.02s", label: "Avg validation time" },
-              { value: "847", label: "Lies exposed", highlight: true },
-              { value: "99.9%", label: "Uptime" },
+              { value: "76%", label: "of workers experience burnout" },
+              { value: "3-7", label: "days advance warning" },
+              { value: "100%", label: "client-side processing", highlight: true },
+              { value: "30s", label: "daily check-in" },
             ].map((stat, i) => (
               <div
                 key={i}
@@ -121,21 +121,21 @@ export default function LandingPage() {
             <div className="grid lg:grid-cols-12 gap-12 lg:gap-24">
               <div className="lg:col-span-5">
                 <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">The Problem</p>
-                <h2 className="text-4xl md:text-5xl font-serif leading-[1.1]">Every dashboard has a dirty secret.</h2>
+                <h2 className="text-4xl md:text-5xl font-serif leading-[1.1]">You don't notice burnout until it's too late.</h2>
               </div>
               <div className="lg:col-span-6 lg:col-start-7 space-y-6 text-muted-foreground text-lg leading-relaxed">
                 <p>
-                  Filters that exclude inconvenient data. Joins that silently drop rows. Calculations that made sense
-                  once but drifted over time.
+                  Burnout creeps up silently. By the time you feel exhausted, overwhelmed, or detached—the damage is
+                  already done. Self-assessment fails because burnout impairs the very self-awareness needed to detect it.
                 </p>
                 <p>
-                  Your team makes decisions on these numbers every day. But when was the last time anyone checked if
-                  they were true?
+                  Your voice tells a different story. Speech patterns, pause frequency, vocal energy—these biomarkers
+                  shift days before you consciously feel the strain.
                 </p>
                 <p className="text-foreground font-medium border-l-2 border-accent pl-4">
-                  A misconfigured filter excluded 23% of transactions for 4 months. The dashboard looked fine.
+                  Gallup reports 76% of employees experience burnout. Most only recognize it after the crash.
                 </p>
-                <p className="text-foreground font-medium">/dev/truth checks. Continuously.</p>
+                <p className="text-foreground font-medium">kanari listens. Predicts. Acts.</p>
               </div>
             </div>
           </div>
@@ -159,18 +159,23 @@ export default function LandingPage() {
               {[
                 {
                   num: "01",
-                  title: "Connect your sources",
-                  desc: "Point to your dashboards, BI tools, and raw data. We handle Looker, Tableau, Metabase, dbt, and raw SQL.",
+                  title: "Record",
+                  desc: "Speak naturally for 30-60 seconds about your day. No scripts, no prompts—just talk. Your voice carries the signal.",
                 },
                 {
                   num: "02",
-                  title: "Define truth tests",
-                  desc: "Declare what should be true about your KPIs. Revenue should match the sum of transactions. Churn should align with cancellations.",
+                  title: "Analyze",
+                  desc: "AI extracts vocal biomarkers entirely in your browser. Speech rate, pause patterns, spectral features—processed locally, never uploaded.",
                 },
                 {
                   num: "03",
-                  title: "Validate continuously",
-                  desc: "Tests run on schedule or on-demand. When a metric drifts from truth, you know immediately—with context.",
+                  title: "Predict",
+                  desc: "Compare today's patterns against your baseline. Forecast burnout risk 3-7 days ahead with Gemini-powered insights.",
+                },
+                {
+                  num: "04",
+                  title: "Act",
+                  desc: "Receive personalized recovery suggestions. Optionally schedule rest blocks directly to your calendar before you hit the wall.",
                 },
               ].map((step, i) => (
                 <div
@@ -199,9 +204,9 @@ export default function LandingPage() {
       <section className="py-32 px-6 md:px-12 bg-background/50 backdrop-blur-xl">
         <ScrollReveal>
           <div className="max-w-7xl mx-auto text-center">
-            <h2 className="text-5xl md:text-7xl font-serif mb-8">Stop guessing.</h2>
+            <h2 className="text-5xl md:text-7xl font-serif mb-8">Prevent the crash.</h2>
             <p className="text-muted-foreground text-xl mb-12 max-w-md mx-auto">
-              Know your metrics are true, or know exactly why they're not.
+              Your voice knows what you don't. Let it protect you.
             </p>
             <EnterButton variant="cta" />
           </div>
@@ -212,7 +217,7 @@ export default function LandingPage() {
       <div className="bg-background/70 backdrop-blur-xl">
         <Footer />
         <div className="border-t border-border/30 py-4 px-6 text-center">
-          <p className="text-xs text-muted-foreground">Built for Tableau Hackathon 2025</p>
+          <p className="text-xs text-muted-foreground">Built for Google DeepMind Gemini 3 Hackathon 2025</p>
         </div>
       </div>
     </div>

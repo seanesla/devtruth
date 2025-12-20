@@ -12,10 +12,10 @@ export function CTASection() {
 
           <div className="relative max-w-2xl">
             <h2 className="text-3xl font-semibold tracking-tight md:text-4xl text-balance">
-              Stop guessing. Start validating.
+              Prevent burnout before it happens.
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Join hundreds of data teams who trust /dev/truth to keep their metrics honest.
+              Your voice knows what you don't. Let kanari listen and protect you.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
@@ -25,7 +25,7 @@ export function CTASection() {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link href="#">Book a Demo</Link>
+                <Link href="#how-it-works">Learn More</Link>
               </Button>
             </div>
           </div>

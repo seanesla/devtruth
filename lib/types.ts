@@ -1,173 +1,138 @@
-// Standardized test status type
-export type TestStatus = "pass" | "fail" | "warn"
+// ============================================
+// Recording Types
+// ============================================
 
-// Test history entry for timeline tracking
-export interface TestHistoryEntry {
-  time: string
-  status: "pass" | "fail"
-  variance: string
-}
+export type RecordingStatus = "recording" | "processing" | "complete" | "error"
 
-// Base test interface with shared fields
-export interface TestBase {
+export interface Recording {
   id: string
-  name: string
-  source: string
-  status: TestStatus
-  variance: string
-  lastRun: string
+  createdAt: string
+  duration: number // seconds
+  status: RecordingStatus
+  features?: AudioFeatures
+  metrics?: VoiceMetrics
 }
 
-// Test summary for list views (dashboard overview, tests list)
-export interface TestSummary extends TestBase {
-  reported: string
-  actual: string
-}
-
-// Full test detail for individual test pages
-export interface TestDetail {
-  id: string
-  name: string
-  status: "pass" | "fail"
-  // Source references
-  semanticModelId: string
-  metricId: string
-  workbookId: string
-  viewId: string
-  source: string // Display name (e.g., "Tableau")
-  // Comparison values
-  dashboardValue: string // What the dashboard shows
-  groundTruthValue: string // What VizQL Data Service returns
-  variance: string
-  variancePercent: number
-  tolerance: number // From metric definition
-  confidence: string
-  lastRun: string
-  // VizQL query used to get ground truth
-  vizqlQuery: VizQLQuery
-  history: TestHistoryEntry[]
-}
-
-// VizQL Data Service query structure
-export interface VizQLQuery {
-  datasourceLuid: string
-  fields: VizQLField[]
-  filters?: VizQLFilter[]
-}
-
-export interface VizQLField {
-  fieldCaption: string
-  function?: "SUM" | "AVG" | "COUNT" | "COUNTD" | "MIN" | "MAX" | "MEDIAN"
-  calculation?: string // Custom calculation
-}
-
-export interface VizQLFilter {
-  fieldCaption: string
-  filterType: "SET" | "QUANTITATIVE_NUMERICAL" | "QUANTITATIVE_DATE" | "DATE" | "TOP" | "MATCH"
-  values?: string[]
-  min?: number | string
-  max?: number | string
+export interface AudioFeatures {
+  // Spectral features (extracted via Meyda)
+  mfcc: number[] // Mel-frequency cepstral coefficients
+  spectralCentroid: number
+  spectralFlux: number
+  spectralRolloff: number
+  // Energy features
+  rms: number // Root mean square energy
+  zcr: number // Zero crossing rate
+  // Temporal features
+  speechRate: number // Syllables per second
+  pauseRatio: number // Ratio of silence to speech
+  pauseCount: number
+  avgPauseDuration: number // milliseconds
 }
 
 // ============================================
-// Semantic Model / KPI Types (Tableau Next)
+// Metrics Types
 // ============================================
 
-export interface SemanticModel {
+export type StressLevel = "low" | "moderate" | "elevated" | "high"
+export type FatigueLevel = "rested" | "normal" | "tired" | "exhausted"
+export type TrendDirection = "improving" | "stable" | "declining"
+
+export interface VoiceMetrics {
+  stressScore: number // 0-100
+  fatigueScore: number // 0-100
+  stressLevel: StressLevel
+  fatigueLevel: FatigueLevel
+  confidence: number // 0-1
+  analyzedAt: string
+}
+
+export interface TrendData {
+  date: string
+  stressScore: number
+  fatigueScore: number
+}
+
+export interface BurnoutPrediction {
+  riskScore: number // 0-100
+  riskLevel: "low" | "moderate" | "high" | "critical"
+  predictedDays: number // Days until potential burnout (3-7)
+  trend: TrendDirection
+  confidence: number // 0-1
+  factors: string[] // Contributing factors
+}
+
+// ============================================
+// Suggestion Types
+// ============================================
+
+export type SuggestionStatus = "pending" | "accepted" | "dismissed" | "scheduled"
+
+export interface Suggestion {
   id: string
-  name: string
-  description: string
-  dataSource: string // Published data source LUID
-  metrics: MetricDefinition[]
+  content: string
+  rationale: string
+  duration: number // minutes
+  category: "break" | "exercise" | "mindfulness" | "social" | "rest"
+  status: SuggestionStatus
+  createdAt: string
+  scheduledFor?: string
+  calendarEventId?: string
 }
 
-// Metric = KPI definition in Tableau Next Semantic Model
-export interface MetricDefinition {
+// ============================================
+// Calendar Types
+// ============================================
+
+export interface CalendarEvent {
   id: string
-  name: string
-  description: string
-  // VizQL-style calculation
-  calculation: string // e.g., "SUM([Sales])" or "SUM([Profit])/SUM([Sales])"
-  // Time dimension for tracking
-  timeDimension: string // e.g., "Order Date"
-  granularity: "day" | "week" | "month" | "quarter" | "year"
-  // Validation rules
-  tolerance: number // Acceptable variance % (e.g., 0.05 = 5%)
-  filters?: MetricFilter[]
+  title: string
+  description?: string
+  start: string // ISO date string
+  end: string // ISO date string
+  type: "recovery" | "break" | "focus"
 }
 
-export interface MetricFilter {
-  field: string
-  filterType: "SET" | "QUANTITATIVE" | "DATE" | "TOP"
-  values?: string[]
-  min?: number
-  max?: number
-}
-
-// ============================================
-// Dashboard Types (Tableau Cloud)
-// ============================================
-
-export interface Workbook {
+export interface RecoveryBlock {
   id: string
-  name: string
-  project: string
-  site: string
-  views: WorkbookView[]
-}
-
-export interface WorkbookView {
-  id: string
-  name: string
-  // Metrics displayed in this view that can be validated
-  displayedMetrics: DisplayedMetric[]
-}
-
-export interface DisplayedMetric {
-  fieldCaption: string // How it appears in the view
-  // How it's calculated in the dashboard (may differ from semantic definition)
-  dashboardCalculation?: string
+  suggestionId: string
+  calendarEventId: string
+  scheduledAt: string
+  duration: number // minutes
+  completed: boolean
 }
 
 // ============================================
-// Alert Types
+// Settings Types
 // ============================================
 
-export type AlertType = "drift" | "failure" | "threshold"
-export type AlertSeverity = "high" | "medium" | "low"
-
-export interface Alert {
-  id: string
-  testId: string
-  testName: string
-  type: AlertType
-  severity: AlertSeverity
-  message: string
-  triggeredAt: string
-  acknowledged: boolean
+export interface UserSettings {
+  // Recording preferences
+  defaultRecordingDuration: number // seconds (30-60)
+  enableVAD: boolean // Voice activity detection
+  // Notification preferences
+  enableNotifications: boolean
+  dailyReminderTime?: string // HH:mm format
+  // Calendar integration
+  calendarConnected: boolean
+  autoScheduleRecovery: boolean
+  preferredRecoveryTimes: string[] // Array of HH:mm
+  // Privacy
+  localStorageOnly: boolean
+  encryptionEnabled: boolean
 }
 
 // ============================================
-// Report Types
+// Dashboard Stats
 // ============================================
 
-export type ReportType = "compliance" | "drift" | "summary"
-
-export interface ReportStats {
-  totalTests: number
-  passing: number
-  failing: number
-  warnings: number
-  avgVariance: string
-}
-
-export interface Report {
-  id: string
-  name: string
-  type: ReportType
-  generatedAt: string
-  period: string
-  stats: ReportStats
+export interface DashboardStats {
+  totalRecordings: number
+  totalMinutesRecorded: number
+  currentStreak: number // Days
+  averageStress: number
+  averageFatigue: number
+  suggestionsAccepted: number
+  recoveryBlocksScheduled: number
 }
 
 // Re-export SceneMode for convenience

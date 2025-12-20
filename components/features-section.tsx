@@ -1,26 +1,26 @@
-import { Shield, Zap, GitBranch, Bell } from "lucide-react"
+import { Mic, Brain, TrendingUp, Calendar } from "lucide-react"
 
 export function FeaturesSection() {
   const features = [
     {
-      icon: Shield,
-      title: "Ground Truth Validation",
-      description: "Compare dashboard KPIs against raw data sources. No more silent calculation errors.",
+      icon: Mic,
+      title: "Voice Biomarker Analysis",
+      description: "Extract stress and fatigue signals from speech patterns, pause frequency, and vocal energy—all processed in your browser.",
     },
     {
-      icon: Zap,
-      title: "Real-time Monitoring",
-      description: "Continuous validation with instant alerts when metrics drift from expected values.",
+      icon: Brain,
+      title: "Predictive Forecasting",
+      description: "AI models detect subtle pattern shifts that precede burnout, giving you 3-7 days of advance warning.",
     },
     {
-      icon: GitBranch,
-      title: "Lineage Tracking",
-      description: "Trace every metric back to its source. Understand exactly how numbers are calculated.",
+      icon: TrendingUp,
+      title: "Longitudinal Tracking",
+      description: "Build your personal baseline over time. Understand your patterns and catch deviations before they become problems.",
     },
     {
-      icon: Bell,
-      title: "Smart Alerting",
-      description: "Context-aware notifications that distinguish noise from genuine data quality issues.",
+      icon: Calendar,
+      title: "Calendar Integration",
+      description: "Automatically schedule recovery blocks when risk is elevated. Prevention is better than cure.",
     },
   ]
 
@@ -29,10 +29,10 @@ export function FeaturesSection() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-16 max-w-2xl">
           <h2 className="text-3xl font-semibold tracking-tight md:text-4xl text-balance">
-            Everything you need to trust your data
+            Everything you need to stay ahead of burnout
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Built for teams who can't afford to make decisions on bad data.
+            Privacy-first. Browser-based. Powered by Gemini 3.
           </p>
         </div>
 

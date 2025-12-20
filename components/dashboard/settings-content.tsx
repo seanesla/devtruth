@@ -4,17 +4,56 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Calendar, Key, Mic, Shield } from "lucide-react"
 
 export function SettingsContent() {
   const [settings, setSettings] = useState({
-    emailAlerts: true,
-    slackAlerts: false,
-    dailyDigest: true,
-    autoRerun: true,
+    enableNotifications: true,
+    dailyReminder: false,
+    enableVAD: true,
+    autoScheduleRecovery: false,
+    localStorageOnly: true,
+    encryptionEnabled: true,
   })
 
   return (
     <div className="max-w-2xl space-y-8">
+      {/* Recording Preferences */}
+      <div className="rounded-lg border border-border bg-card p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <Mic className="h-5 w-5 text-accent" />
+          <h2 className="text-lg font-semibold">Recording Preferences</h2>
+        </div>
+
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <Label htmlFor="enable-vad" className="text-base">
+                Voice Activity Detection
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Only analyze speech segments, filtering out silence and noise
+              </p>
+            </div>
+            <Switch
+              id="enable-vad"
+              checked={settings.enableVAD}
+              onCheckedChange={(checked) => setSettings({ ...settings, enableVAD: checked })}
+            />
+          </div>
+
+          <div>
+            <Label className="text-base">Default Recording Duration</Label>
+            <p className="text-sm text-muted-foreground mb-3">Recommended duration for voice check-ins</p>
+            <select className="h-10 w-32 rounded-md border border-border bg-background px-3 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent">
+              <option value="30">30 seconds</option>
+              <option value="45">45 seconds</option>
+              <option value="60">60 seconds</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       {/* Notifications */}
       <div className="rounded-lg border border-border bg-card p-6">
         <h2 className="mb-6 text-lg font-semibold">Notifications</h2>
@@ -22,101 +61,145 @@ export function SettingsContent() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor="email-alerts" className="text-base">
-                Email Alerts
+              <Label htmlFor="enable-notifications" className="text-base">
+                Browser Notifications
               </Label>
-              <p className="text-sm text-muted-foreground">Receive email notifications for failing tests</p>
+              <p className="text-sm text-muted-foreground">Receive alerts for elevated stress or recovery suggestions</p>
             </div>
             <Switch
-              id="email-alerts"
-              checked={settings.emailAlerts}
-              onCheckedChange={(checked) => setSettings({ ...settings, emailAlerts: checked })}
+              id="enable-notifications"
+              checked={settings.enableNotifications}
+              onCheckedChange={(checked) => setSettings({ ...settings, enableNotifications: checked })}
             />
           </div>
 
           <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor="slack-alerts" className="text-base">
-                Slack Alerts
+              <Label htmlFor="daily-reminder" className="text-base">
+                Daily Reminder
               </Label>
-              <p className="text-sm text-muted-foreground">Send alerts to your Slack channel</p>
+              <p className="text-sm text-muted-foreground">Get a reminder to record your daily check-in</p>
             </div>
             <Switch
-              id="slack-alerts"
-              checked={settings.slackAlerts}
-              onCheckedChange={(checked) => setSettings({ ...settings, slackAlerts: checked })}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <Label htmlFor="daily-digest" className="text-base">
-                Daily Digest
-              </Label>
-              <p className="text-sm text-muted-foreground">Get a daily summary of all test results</p>
-            </div>
-            <Switch
-              id="daily-digest"
-              checked={settings.dailyDigest}
-              onCheckedChange={(checked) => setSettings({ ...settings, dailyDigest: checked })}
+              id="daily-reminder"
+              checked={settings.dailyReminder}
+              onCheckedChange={(checked) => setSettings({ ...settings, dailyReminder: checked })}
             />
           </div>
         </div>
       </div>
 
-      {/* Test Settings */}
+      {/* Calendar Integration */}
       <div className="rounded-lg border border-border bg-card p-6">
-        <h2 className="mb-6 text-lg font-semibold">Test Configuration</h2>
+        <div className="flex items-center gap-2 mb-6">
+          <Calendar className="h-5 w-5 text-accent" />
+          <h2 className="text-lg font-semibold">Calendar Integration</h2>
+        </div>
 
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor="auto-rerun" className="text-base">
-                Auto Re-run
+              <Label htmlFor="auto-schedule" className="text-base">
+                Auto-Schedule Recovery
               </Label>
-              <p className="text-sm text-muted-foreground">Automatically re-run failing tests after 5 minutes</p>
+              <p className="text-sm text-muted-foreground">
+                Automatically add recovery blocks to your calendar when stress is elevated
+              </p>
             </div>
             <Switch
-              id="auto-rerun"
-              checked={settings.autoRerun}
-              onCheckedChange={(checked) => setSettings({ ...settings, autoRerun: checked })}
+              id="auto-schedule"
+              checked={settings.autoScheduleRecovery}
+              onCheckedChange={(checked) => setSettings({ ...settings, autoScheduleRecovery: checked })}
             />
           </div>
 
+          <div className="rounded-lg border border-border bg-secondary/30 p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-muted" />
+                <span>Google Calendar</span>
+                <span className="text-xs text-muted-foreground">(Not connected)</span>
+              </div>
+              <Button variant="outline" size="sm">
+                Connect
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* API Configuration */}
+      <div className="rounded-lg border border-border bg-card p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <Key className="h-5 w-5 text-accent" />
+          <h2 className="text-lg font-semibold">Gemini API</h2>
+        </div>
+
+        <div className="space-y-4">
           <div>
-            <Label className="text-base">Variance Threshold</Label>
-            <p className="text-sm text-muted-foreground mb-3">Mark tests as warning when variance exceeds this value</p>
+            <Label className="text-base">API Key</Label>
+            <p className="text-sm text-muted-foreground mb-3">
+              Required for personalized suggestions. Get one from{" "}
+              <a
+                href="https://aistudio.google.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:underline"
+              >
+                Google AI Studio
+              </a>
+            </p>
             <input
-              type="text"
-              defaultValue="5%"
-              className="h-10 w-32 rounded-md border border-border bg-background px-3 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              type="password"
+              placeholder="Enter your Gemini API key"
+              className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
             />
           </div>
         </div>
       </div>
 
-      {/* Data Sources */}
+      {/* Privacy */}
       <div className="rounded-lg border border-border bg-card p-6">
-        <h2 className="mb-6 text-lg font-semibold">Connected Sources</h2>
+        <div className="flex items-center gap-2 mb-6">
+          <Shield className="h-5 w-5 text-accent" />
+          <h2 className="text-lg font-semibold">Privacy</h2>
+        </div>
 
-        <div className="space-y-4">
-          {["Looker", "Tableau", "Metabase"].map((source) => (
-            <div
-              key={source}
-              className="flex items-center justify-between rounded-lg border border-border bg-secondary/30 p-4"
-            >
-              <div className="flex items-center gap-3">
-                <div className="h-2 w-2 rounded-full bg-success" />
-                <span>{source}</span>
-              </div>
-              <Button variant="ghost" size="sm">
-                Configure
-              </Button>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <Label htmlFor="local-storage" className="text-base">
+                Local Storage Only
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Store all data locally in your browser. No cloud sync.
+              </p>
             </div>
-          ))}
+            <Switch
+              id="local-storage"
+              checked={settings.localStorageOnly}
+              onCheckedChange={(checked) => setSettings({ ...settings, localStorageOnly: checked })}
+            />
+          </div>
 
-          <Button variant="outline" className="w-full bg-transparent">
-            Add Data Source
+          <div className="flex items-center justify-between">
+            <div>
+              <Label htmlFor="encryption" className="text-base">
+                Encrypt Stored Data
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Use AES-GCM encryption for all data stored in IndexedDB
+              </p>
+            </div>
+            <Switch
+              id="encryption"
+              checked={settings.encryptionEnabled}
+              onCheckedChange={(checked) => setSettings({ ...settings, encryptionEnabled: checked })}
+            />
+          </div>
+
+          <Button variant="outline" className="w-full bg-transparent text-destructive hover:bg-destructive/10">
+            Clear All Data
           </Button>
         </div>
       </div>
