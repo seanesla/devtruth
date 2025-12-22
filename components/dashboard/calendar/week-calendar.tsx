@@ -72,7 +72,7 @@ export function WeekCalendar({
 
   return (
     <div className={cn(
-      "flex flex-col h-full rounded-xl border border-border/50 bg-card/20 backdrop-blur-sm",
+      "flex flex-col h-full rounded-xl border border-border bg-card/20 backdrop-blur-sm",
       className
     )}>
       {/* Header */}
@@ -101,7 +101,7 @@ export function WeekCalendar({
           </div>
 
           {/* Day columns */}
-          <div className="flex flex-1 divide-x divide-border/30">
+          <div className="flex flex-1 divide-x divide-border/80">
             {weekDays.map((date) => (
               <CalendarDayColumn
                 key={date.toISOString()}

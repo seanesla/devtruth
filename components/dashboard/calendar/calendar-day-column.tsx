@@ -44,18 +44,29 @@ export function CalendarDayColumn({
 
       {/* Time slots */}
       <div className="relative flex-1">
-        {TIME_SLOTS.map((hour) => (
-          <button
-            key={hour}
-            onClick={() => onTimeSlotClick?.(date, hour)}
-            className={cn(
-              "w-full h-12 border-b border-border/30",
-              "hover:bg-accent/5 transition-colors",
-              "focus:outline-none focus:bg-accent/10"
-            )}
-            aria-label={`Schedule at ${formatHour(hour)} on ${date.toDateString()}`}
-          />
-        ))}
+        {TIME_SLOTS.map((hour) => {
+          const isCurrentHour = isToday && new Date().getHours() === hour
+
+          return (
+            <button
+              key={hour}
+              onClick={() => onTimeSlotClick?.(date, hour)}
+              className={cn(
+                "w-full h-12 border-b border-border/80 flex items-center justify-center",
+                "hover:bg-accent/5 transition-colors",
+                "focus:outline-none focus:bg-accent/10",
+                isCurrentHour && "bg-accent/10"
+              )}
+              aria-label={`Schedule at ${formatHour(hour)} on ${date.toDateString()}`}
+            >
+              {isCurrentHour && (
+                <span className="text-[10px] font-medium text-accent uppercase tracking-wide">
+                  Now
+                </span>
+              )}
+            </button>
+          )
+        })}
 
         {/* Event blocks */}
         {events.map((event) => {
@@ -75,31 +86,6 @@ export function CalendarDayColumn({
           )
         })}
 
-        {/* Current time indicator */}
-        {isToday && <CurrentTimeIndicator />}
-      </div>
-    </div>
-  )
-}
-
-function CurrentTimeIndicator() {
-  const now = new Date()
-  const hours = now.getHours()
-  const minutes = now.getMinutes()
-
-  // Only show if within visible range (8 AM - 8 PM)
-  if (hours < 8 || hours > 20) return null
-
-  const top = (hours - 8) * 48 + (minutes / 60) * 48
-
-  return (
-    <div
-      className="absolute left-0 right-0 z-10 pointer-events-none"
-      style={{ top: `${top}px` }}
-    >
-      <div className="flex items-center">
-        <div className="h-2 w-2 rounded-full bg-destructive" />
-        <div className="flex-1 h-px bg-destructive" />
       </div>
     </div>
   )
