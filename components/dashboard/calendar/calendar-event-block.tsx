@@ -13,7 +13,7 @@ const categoryIcons: Record<SuggestionCategory, typeof Coffee> = {
 }
 
 const categoryColors: Record<SuggestionCategory, { bg: string; border: string; text: string }> = {
-  break: { bg: "bg-amber-500/20", border: "border-amber-500/40", text: "text-amber-500" },
+  break: { bg: "bg-accent/20", border: "border-accent/40", text: "text-accent" },
   exercise: { bg: "bg-green-500/20", border: "border-green-500/40", text: "text-green-500" },
   mindfulness: { bg: "bg-purple-500/20", border: "border-purple-500/40", text: "text-purple-500" },
   social: { bg: "bg-blue-500/20", border: "border-blue-500/40", text: "text-blue-500" },
