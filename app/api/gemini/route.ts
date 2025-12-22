@@ -30,17 +30,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const body = await request.json()
-    const {
-      stressScore,
-      stressLevel,
-      fatigueScore,
-      fatigueLevel,
-      trend,
-      voicePatterns,
-      history,
-      burnout,
-      confidence
-    } = body
+    const { stressScore, stressLevel, fatigueScore, fatigueLevel, trend, voicePatterns, history, burnout, confidence } = body
 
     // Validate required fields
     if (
@@ -247,18 +237,13 @@ export async function POST(request: NextRequest) {
       trend as TrendDirection
     )
 
-    // Build enriched context object for future prompt enhancement
-    // Currently validated but not yet used in prompts (see lib/gemini/prompts.ts)
-    const enrichedContext = {
-      ...context,
-      ...(voicePatterns && { voicePatterns }),
-      ...(history && { history }),
-      ...(burnout && { burnout }),
-      ...(confidence !== undefined && { confidence })
-    }
+    // Add enriched context if provided
+    if (voicePatterns) context.voicePatterns = voicePatterns
+    if (history) context.history = history
+    if (burnout) context.burnout = burnout
+    if (confidence !== undefined) context.confidence = confidence
 
-    // Generate user prompt (currently uses basic context only)
-    // Future enhancement: pass enrichedContext when prompts.ts is updated
+    // Generate user prompt with enriched context
     const userPrompt = generateUserPrompt(context)
 
     // Call Gemini API
