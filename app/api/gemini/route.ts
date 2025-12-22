@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const body = await request.json()
-    const { stressScore, stressLevel, fatigueScore, fatigueLevel, trend } = body
+    const { stressScore, stressLevel, fatigueScore, fatigueLevel, trend, voicePatterns, history, burnout, confidence } = body
 
     // Validate required fields
     if (
@@ -87,6 +87,12 @@ export async function POST(request: NextRequest) {
       fatigueLevel as FatigueLevel,
       trend as TrendDirection
     )
+
+    // Add enriched context if provided
+    if (voicePatterns) context.voicePatterns = voicePatterns
+    if (history) context.history = history
+    if (burnout) context.burnout = burnout
+    if (confidence !== undefined) context.confidence = confidence
 
     // Generate user prompt
     const userPrompt = generateUserPrompt(context)
