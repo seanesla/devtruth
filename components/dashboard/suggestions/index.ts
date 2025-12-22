@@ -9,9 +9,3 @@ export {
   countSuggestionsByCategory,
   type FilterValue,
 } from "./category-filter-tabs"
-
-// Calendar components
-export { WeekCalendar } from "./week-calendar"
-export { CalendarHeader } from "./calendar-header"
-export { CalendarDayColumn } from "./calendar-day-column"
-export { CalendarEventBlock } from "./calendar-event-block"
