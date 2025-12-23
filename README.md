@@ -5,7 +5,7 @@
 [![Gemini 3 Hackathon](https://img.shields.io/badge/Google%20DeepMind-Gemini%203%20Hackathon-4285F4?style=flat-square&logo=google&logoColor=white)](https://gemini3.devpost.com)
 [![Platform](https://img.shields.io/badge/Platform-Browser-orange?style=flat-square)]()
 
-<!-- PLACEHOLDER: Hero screenshot - landing page with 3D particle background, tagline visible, dark theme -->
+![kanari landing page with 3D geometric visualization](readmestuff/landingpagehero.png)
 
 ---
 
