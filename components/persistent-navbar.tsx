@@ -170,17 +170,14 @@ export function PersistentNavbar() {
       </div>
 
       {/* Mobile: Simple full-width header - crossfades with desktop */}
-      <motion.header
-        initial={{ opacity: 0, y: -10 }}
-        animate={{
-          opacity: visible ? 1 : 0,
-          y: visible ? 0 : -10
-        }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+      <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50",
-          "pointer-events-auto opacity-100 md:pointer-events-none md:opacity-0",
-          "transition-opacity duration-300 ease-in-out"
+          "transition-all duration-300 ease-in-out",
+          // Hide on desktop
+          "md:opacity-0 md:pointer-events-none",
+          // Page load animation
+          visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
         )}
       >
         <div className="flex items-center justify-between px-5 py-4">
@@ -302,7 +299,7 @@ export function PersistentNavbar() {
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.header>
+      </header>
     </>
   )
 }
