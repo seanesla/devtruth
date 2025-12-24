@@ -1,5 +1,7 @@
 "use client"
 
+import { logWarn } from "@/lib/logger"
+
 export type RecorderState = "idle" | "requesting" | "recording" | "stopping" | "error"
 
 export interface RecorderOptions {
@@ -175,7 +177,9 @@ export class AudioRecorder {
 
     // Close audio context
     if (this.audioContext) {
-      this.audioContext.close().catch(() => {})
+      this.audioContext.close().catch((error) => {
+        logWarn("AudioRecorder", "Failed to close audio context:", error)
+      })
       this.audioContext = null
     }
 
@@ -191,7 +195,7 @@ export function isRecordingSupported(): boolean {
   return !!(
     typeof navigator !== "undefined" &&
     navigator.mediaDevices &&
-    navigator.mediaDevices.getUserMedia &&
+    typeof navigator.mediaDevices.getUserMedia === "function" &&
     typeof AudioContext !== "undefined"
   )
 }
