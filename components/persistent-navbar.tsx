@@ -185,7 +185,7 @@ export function PersistentNavbar() {
             href="/"
             className="flex items-center gap-2 text-accent hover:text-accent-light transition-colors"
           >
-            <Logo className="h-7 w-auto" />
+            <Logo className="h-10 w-auto" />
           </Link>
 
           <button
@@ -202,7 +202,7 @@ export function PersistentNavbar() {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.15 }}
                 >
-                  <X className="h-6 w-6" />
+                  <X className="h-9 w-9" />
                 </motion.div>
               ) : (
                 <motion.div
@@ -212,7 +212,7 @@ export function PersistentNavbar() {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.15 }}
                 >
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-9 w-9" />
                 </motion.div>
               )}
             </AnimatePresence>
