@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber"
 import { MeshTransmissionMaterial } from "@react-three/drei"
 import * as THREE from "three"
 import type { SceneMode } from "@/lib/types"
-import { useSceneMode } from "./scene-provider"
+import { useSceneMode } from "@/lib/scene-context"
 import { ORBITAL_RINGS } from "./constants"
 
 interface KanariCoreProps {
